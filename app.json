@@ -15,11 +15,11 @@
     },
     "ios": {
       "supportsTablet": true,
-       "googleServicesFile": "./firebase/GoogleService-Info.plist",
-       "bundleIdentifier": "com.osvaldovictor31.driverschool"
+      "googleServicesFile": "./firebase/GoogleService-Info.plist",
+      "bundleIdentifier": "com.osvaldovictor31.driverschool"
     },
     "android": {
-       "googleServicesFile": "./firebase/google-services.json",
+      "googleServicesFile": "./firebase/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -42,10 +42,12 @@
           "launchMode": "most-recent"
         }
       ],
-       [
+      [
         "expo-custom-assets",
         {
-          "assetsPaths": ["./assets/animations/"]
+          "assetsPaths": [
+            "./assets/animations/"
+          ]
         }
       ],
       [
@@ -55,7 +57,8 @@
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true
