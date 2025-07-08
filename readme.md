@@ -47,3 +47,11 @@ Aplicativo móvel **inovador** que ensina direção veicular de forma **autônom
 - Integração com órgãos de trânsito para agendamento de provas reais.  
 - Comunidade para troca de experiências entre usuários.  
 
+## 📲 **Tecnologias**  
+- Firebase 
+- React Native
+- Expo
+- River (Para animação)
+- TinyBase (armazenamento offiline first)
+- TailwindCss
+- NativeWind  
