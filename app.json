@@ -42,6 +42,12 @@
           "launchMode": "most-recent"
         }
       ],
+       [
+        "expo-custom-assets",
+        {
+          "assetsPaths": ["./assets/animations/"]
+        }
+      ],
       [
         "expo-build-properties",
         {
