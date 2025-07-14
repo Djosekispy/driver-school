@@ -2,9 +2,11 @@ import React, { useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import LottieView from 'lottie-react-native';
 import animation from '@/assets/animations/driver.json';
+import { useRouter } from 'expo-router';
 
 
 export default function Initial() {
+  const router = useRouter();
 
   return (
     <View className='flex-1 items-center justify-center'>
@@ -20,7 +22,7 @@ export default function Initial() {
             style={styles.animation}
           />
           <View  className='items-center justify-center'>
-            <TouchableOpacity className='bg-[#383A44] px-8 py-4 rounded-full'>
+            <TouchableOpacity className='bg-[#383A44] px-8 py-4 rounded-full' onPress={()=>router.push('/(auth)/login')}>
                 <Text className='text-center font-bold text-lg text-white' style={{fontFamily : 'Poppins'}}>Começar</Text>
             </TouchableOpacity>
           </View>
