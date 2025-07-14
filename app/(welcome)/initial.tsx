@@ -8,8 +8,10 @@ export default function Initial() {
 
   return (
     <View className='flex-1 items-center justify-center'>
-         <View className='items-center justify-center text-justify px-8'>
-                <Text style={{fontFamily : 'Poppins'}} className='text-center text-md text-bold'>Aprenda Tudo sobre condução em qualquer lugar e saia na frente em qualquer teste</Text>
+         <View className='items-center justify-center text-justify px-8 absolute top-20'>
+                <Text style={{fontFamily : 'Poppins'}} className='text-center text-lg text-bold'>
+                    Aprenda Tudo sobre condução em qualquer lugar e saia na frente em qualquer teste
+                    </Text>
           </View>
        <LottieView
             source={animation} 
