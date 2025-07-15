@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./firebase/GoogleService-Info.plist",
-      "bundleIdentifier": "com.osvaldovictor31.driverschool"
+      "bundleIdentifier": "com.kilemba"
     },
     "android": {
       "googleServicesFile": "./firebase/google-services.json",
@@ -25,7 +25,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.osvaldovictor31.driverschool"
+      "package": "com.kilemba"
     },
     "web": {
       "bundler": "metro",
@@ -62,6 +62,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "48751ef8-f617-46e2-b87e-0bcf65f61228"
+      }
     }
   }
 }
