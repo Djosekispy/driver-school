@@ -48,7 +48,7 @@ export default function Register(){
         control={control}
         name="name"
         placeholder="Digite seu nome"
-        error={errors.password}
+        error={errors.name}
         secureTextEntry
       />
 
