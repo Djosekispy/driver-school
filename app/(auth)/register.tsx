@@ -4,14 +4,14 @@ import { AuthLayout } from '@/components/auth/layout/AuthLayout';
 import { Input } from '@/components/auth/ui/Input';
 import { Button } from '@/components/auth/ui/Button';
 import { SocialButton } from '@/components/auth/ui/SocialButton';
-import { useAuthForm } from '@/components/auth/hooks/useAuthForm';
 import { SignInFormData } from '@/components/auth/types/auth';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { registerAuthForm } from '@/components/auth/hooks/registerAuth';
 import { Link } from 'expo-router';
 
-export default function Login(){
-     const { control, handleSubmit, errors } = useAuthForm();
+export default function Register(){
+     const { control, handleSubmit, errors } = registerAuthForm();
 
   const onSubmit = (data: SignInFormData) => {
     console.log(data);
@@ -20,8 +20,8 @@ export default function Login(){
 
     return (
         <AuthLayout
-      title="Bem Vindo"
-      subtitle="Digite suas credencias e comece sua jornada, e conte conosco para qualquer coisa"
+      title="Criar Conta"
+      subtitle="Bem vindo a esta jornada e fique pronto para explorar as dezenas de surpresas que preparamos para si!"
     >
       {/* Social Login Buttons */}
       <View className='flex-row gap-4 justify-center items-center'>
@@ -44,6 +44,13 @@ export default function Login(){
         <Text className='px-4 text-gray-500'>Ou</Text>
         <View className='flex-1 h-px bg-gray-300' />
       </View>
+    <Input
+        control={control}
+        name="name"
+        placeholder="Digite seu nome"
+        error={errors.password}
+        secureTextEntry
+      />
 
       {/* Email Input */}
       <Input
@@ -62,20 +69,17 @@ export default function Login(){
         secureTextEntry
       />
 
-      {/* Forgot Password */}
-      <TouchableOpacity className='items-end mb-6'>
-        <Text className='text-blue-600'>Esqueceu sua senha?</Text>
-      </TouchableOpacity>
+   
 
       {/* Sign In Button */}
-      <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
+      <Button title="Registrar" onPress={handleSubmit(onSubmit)} />
 
       {/* Sign Up Link */}
       <View className='flex-row justify-center mt-4'>
-        <Text className='text-gray-500'>Ainda não tem uma conta? </Text>
-        <Link asChild href={'/(auth)/register'}>
+        <Text className='text-gray-500'>Já tens uma conta? </Text>
+        <Link asChild href={'/(auth)/login'}>
         <TouchableOpacity>
-          <Text className='text-blue-600'>Cadastar-se</Text>
+          <Text className='text-blue-600'>Entrar</Text>
         </TouchableOpacity>
         </Link>
       </View>
