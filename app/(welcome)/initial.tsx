@@ -22,7 +22,7 @@ export default function Initial() {
             style={styles.animation}
           />
           <View  className='items-center justify-center'>
-            <TouchableOpacity className='bg-[#383A44] px-8 py-4 rounded-full' onPress={()=>router.push('/(auth)/login')}>
+            <TouchableOpacity className='bg-[#4378DB] px-8 w-52 py-2 rounded-lg' onPress={()=>router.push('/(auth)/login')}>
                 <Text className='text-center font-bold text-lg text-white' style={{fontFamily : 'Poppins'}}>Começar</Text>
             </TouchableOpacity>
           </View>
