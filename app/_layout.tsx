@@ -44,6 +44,7 @@ function RootLayoutNav() {
   return (
       <Stack>
         <StatusBar barStyle={'dark-content'} translucent />
+          <Stack.Screen name="(home)" options={{ headerShown: false }} />
         <Stack.Screen name="(welcome)" options={{ headerShown: false }} />
          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
