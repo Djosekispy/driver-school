@@ -1,6 +1,7 @@
-import Dashboard from "@/components/dashboard/sceen/app"
+import DashboardScreen from "@/components/dashboard/screen/painel"
+import Dashboard from "@/components/dashboard/screen/painel"
 
 
-export default function DashboardScreen(){
-    return <Dashboard />
+export default function DashboardPage(){
+    return <DashboardScreen />
 }
