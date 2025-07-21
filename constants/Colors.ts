@@ -23,8 +23,8 @@ export const COLORS = {
     light: '#ffffff',
   },
   background: {
-    light: '#e3f2fd',
-    dark: '#1565c0',
+    light: '#F3F5FD',
+    dark: '#282828',
   },
   status: {
     success: '#4caf50',

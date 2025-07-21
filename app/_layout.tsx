@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "../css/global.css"
 import { StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export {
@@ -42,11 +43,15 @@ export default function RootLayout() {
 function RootLayoutNav() {
 
   return (
-      <Stack>
+    <SafeAreaView style={{flex: 1}}>
+      
         <StatusBar barStyle={'dark-content'} translucent />
+      <Stack screenOptions={{headerShown:false}}>
           <Stack.Screen name="(home)" options={{ headerShown: false }} />
         <Stack.Screen name="(welcome)" options={{ headerShown: false }} />
          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+           <Stack.Screen name="(details)" options={{ headerShown: false }} />
       </Stack>
+      </SafeAreaView>
   );
 }
