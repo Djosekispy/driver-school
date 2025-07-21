@@ -26,19 +26,28 @@ const ChatScreen = () => {
   const messageListRef = useRef(null);
   const [isLoading, setIsloading ] = useState(false)
 
-  useEffect(() => {
-    (async () => {
-     const db = await  initializeDatabase();
+ useEffect(() => {
+  const loadMessages = async () => {
+    try {
+      const db = await initializeDatabase();
       const rows = await obterTodasAsMensagens();
-      setMessages(rows.map(r => ({
-        id: String(r.id),
-        text: r.text,
-        sender: 'ai',
-        timestamp: new Date(r.time),
-        input: r.input
-      })));
-    })();
-  }, []);
+      
+      const formattedMessages = rows.map(row => ({
+        id: String(row.id),
+        text: row.text || row.input, 
+        sender: row.text ? 'ai' : 'user' as 'ai' | 'user', 
+        timestamp: new Date(row.time),
+        input: row.input 
+      }));
+
+      setMessages(formattedMessages);
+    } catch (error) {
+      console.error('Erro ao carregar mensagens:', error);
+    }
+  };
+
+  loadMessages();
+}, []);
 
 const handleSendMessage = async (text: string) => {
   setIsloading(true)
