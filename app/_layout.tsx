@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "../css/global.css"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/AuthContext/AuthContext';
 

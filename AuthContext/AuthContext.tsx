@@ -6,6 +6,8 @@ import { addDoc, collection, getDocs, query, Timestamp, updateDoc, where } from 
 import { clearUserFromStorage, getUserFromStorage, saveUserToStorage } from '@/firebase/storage';
 import { User } from '@/types/User';
 import { auth, db } from '@/firebase/firebase';
+import Toast from '@/components/ui/toast';
+import LoadingModal from '@/components/ui/loading';
 
 
 interface AuthContextType {
@@ -17,6 +19,7 @@ interface AuthContextType {
   updatePhoto : (photo : string)=> Promise<void>;
   logout: () => void;
   updateUserLocation: (location: { lat: number; lng: number }) => void;
+  isAuthenticated : boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -170,11 +173,19 @@ const register = async (userData: Partial<User>, password: string) => {
     updatedUser,
     updatePhoto,
     logout,
-    updateUserLocation
+    updateUserLocation,
+     isAuthenticated: !!user,
   };
 
   return (
   <>
+    <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={() => setToast({ ...toast, visible: false })}
+      />
+        <LoadingModal visible={isLoading} />
   <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   </>
   )

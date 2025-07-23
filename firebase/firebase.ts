@@ -1,25 +1,29 @@
+// src/firebase/firebase.ts (ou onde você quiser)
 
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth, initializeAuth, getReactNativePersistence} from "firebase/auth";
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from "firebase/firestore"; 
+import { initializeAuth, getReactNativePersistence, getAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD4m7CXbe7Gk1eULVX7jXgAkn3KOS8zEGc",
-  authDomain: "sikola-6e3ec.firebaseapp.com",
-  projectId: "sikola-6e3ec",
-  storageBucket: "sikola-6e3ec.appspot.com",
-  messagingSenderId: "196378007285",
-  appId: "1:196378007285:web:1ba362b2ae5565d84717bc",
-  measurementId: "G-PGH6DQHBB0"
+  apiKey: "AIzaSyAtLq80MuX937AbGJQw82_qwbwXsmVduCI",
+  authDomain: "sorteio-13df5.firebaseapp.com",
+  databaseURL: "https://sorteio-13df5-default-rtdb.firebaseio.com",
+  projectId: "sorteio-13df5",
+  storageBucket: "sorteio-13df5.appspot.com",
+  messagingSenderId: "517479363665",
+  appId: "1:517479363665:web:c3f1c2b3945f4848507470"
 };
 
-// Initialize Firebase
-const App = initializeApp(firebaseConfig);
+// Inicializar App Firebase
+const app = initializeApp(firebaseConfig);
 
-export const auth = initializeAuth(App, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-})
+// Inicializar Auth com persistência no React Native
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
-export const db = getFirestore(App);
-//export const auth = getAuth(App);
+// Firestore
+const db = getFirestore(app);
+
+export { app, auth, db };

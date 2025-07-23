@@ -9,17 +9,25 @@ import { SignInFormData } from '@/components/auth/types/auth';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Link, useRouter } from 'expo-router';
+import { useAuth } from '@/AuthContext/AuthContext';
 
 export default function Login(){
      const { control, handleSubmit, errors } = useAuthForm();
+    const { isAuthenticated, isLoading , login} = useAuth();
       const router = useRouter();
 
-
+      useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+          router.replace('/(home)'); 
+        }
+      }, [isAuthenticated, isLoading]);
 
   const onSubmit = async (data: SignInFormData) => {
-    
-      console.log(data)
-  
+    try {
+      await login(data.email,data.password);
+    } catch (error) {
+      console.error('Error ao fazer login',error)
+    }
   };
 
     return (
