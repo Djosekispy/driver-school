@@ -5,9 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "../css/global.css"
+import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '@/AuthContext/AuthContext';
 
 
 export {
@@ -45,14 +45,15 @@ function RootLayoutNav() {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar  style='dark' translucent/>
-     
+       <AuthProvider>
+        <StatusBar barStyle={'dark-content'} translucent />
       <Stack screenOptions={{headerShown:false}}>
-          <Stack.Screen name="(home)" options={{ headerShown: false }} />
         <Stack.Screen name="(welcome)" options={{ headerShown: false }} />
          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+           <Stack.Screen name="(home)" options={{ headerShown: false }} />
            <Stack.Screen name="(details)" options={{ headerShown: false }} />
       </Stack>
+      </AuthProvider>
       </SafeAreaView>
   );
 }

@@ -1,34 +1,62 @@
-// Tipos para os dados do usuário
-export type UserData = {
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+// types/user.ts
+export interface User {
   id: string;
   name: string;
+  email: string;
   avatar: string;
-  level: 'Iniciante' | 'Intermediário' | 'Avançado';
-  progress: number;
-  daysStreak: number;
-};
+  isAdmin: boolean;
+  licenseType: 'A' | 'B' | 'AB' | 'C' | 'D' | 'E';
+  joinedAt: Date;
+}
 
-// Tipos para estatísticas
-export type StatsData = {
-  testsCompleted: number;
-  correctAnswers: number;
-  bestScore: number;
-  signsMastered: number;
-};
+// types/progress.ts
+export interface Progress {
+  completedLessons: number;
+  totalLessons: number;
+  percentage: number;
+  nextLesson: string;
+  lastAccessed: Date;
+}
 
-// Tipos para testes recentes
-export type RecentTest = {
+// types/test.ts
+export interface TestResult {
   id: string;
-  date: string;
+  date: Date;
   score: number;
-  correct: number;
-  total: number;
-};
+  passed: boolean;
+  testType: 'Simulado' | 'Oficial';
+  totalQuestions: number;
+  correctAnswers: number;
+}
 
-// Tipos para cards de ação
-export type ActionCardProps = {
+// types/theme.ts
+export interface Theme {
+  id: string;
   title: string;
-  icon: React.ReactNode;
-  color: string;
-  onPress?: () => void;
-};
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  totalLessons: number;
+  completedLessons: number;
+  category: 'Legislação' | 'Direção' | 'Primeiros Socorros' | 'Mecânica Básica' | 'Sinalização';
+}
+
+// types/daily-tip.ts
+export interface DailyTip {
+  id: string;
+  title: string;
+  content: string;
+  date: Date;
+  category: string;
+}
+
+// types/video.ts
+export interface FeaturedVideo {
+  id: string;
+  title: string;
+  duration: string;
+  thumbnail: string;
+  views: number;
+  uploadDate: Date;
+  instructor: string;
+}

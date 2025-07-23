@@ -55,3 +55,18 @@ Aplicativo móvel **inovador** que ensina direção veicular de forma **autônom
 - TinyBase (armazenamento offiline first)
 - TailwindCss
 - NativeWind  
+
+## Requisito Funcional
+# Admin
+- AUTENTICACAO
+- CRUD VIDEOS
+- CRUD SINAIS
+- CRUD TESTES
+- GERIR USUARIOS
+
+# User
+- AUTENTICACAO
+- VER SINAIS
+- VER VIDEOS
+- VER ESTATISTICAS
+- FAZER TESTES

@@ -1,46 +1,46 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import DashboardHeader from '../ui/DashboardHeader';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { 
+  mockUser, 
+  mockProgress, 
+  mockTests, 
+  mockThemes, 
+  mockDailyTip, 
+  mockFeaturedVideo 
+} from '../data/data';
+import Header from '../ui/Header';
 import ProgressCard from '../ui/ProgressCard';
-import SectionHeader from '../ui/SectionHeader';
-import RecentTests from '../ui/RecentTests';
-import LearningModules from '../ui/LearningModules';
-import DailyTip from '../ui/DailyTip';
-import TrafficSigns from '../ui/TrafficSigns';
-import { COLORS } from '@/constants/Colors';
+import TestHistorySection from '../ui/TestHistorySection';
+import ThemesSection from '../ui/ThemesSection';
+import DailyTipCard from '../ui/DailyTipCard';
+import FeaturedVideoCard from '../ui/FeaturedVideoCard';
+import { COLORS } from '@/hooks/useColors';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
-const DashboardScreen = () => {
+const HomeScreen = () => {
+  const router = useRouter()
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: COLORS.blue.lighten5 }}>
-      <ScrollView className="px-4 py-2">
-        {/* Cabeçalho */}
-        <DashboardHeader userName="João" />
-        
-        {/* Cartão de Progresso */}
-        <ProgressCard progress={72} testsCompleted={15} signsLearned={42} hoursPracticed={8.5} />
-        
-        {/* Seção de Testes Recentes */}
-        <SectionHeader title="Testes Recentes" actionText="Ver todos" />
-        <RecentTests />
-        
-        {/* Módulos de Aprendizado */}
-        <SectionHeader title="Continue Aprendendo" />
-        <LearningModules />
-        
-        {/* Dica do Dia */}
-        <DailyTip />
-        
-        {/* Sinais de Trânsito */}
-        <SectionHeader title="Sinais de Trânsito" actionText="Ver todos" />
-        <TrafficSigns />
-        
-        {/* Espaço no final para scroll */}
-        <View className="h-8" />
+    <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
+      <Header user={mockUser} />
+        {mockUser.isAdmin && (
+        <TouchableOpacity 
+          className="absolute bottom-6 right-6 z-10 w-14 h-14 rounded-full justify-center items-center shadow-lg"
+          style={{ backgroundColor: COLORS.primary }}
+          onPress={() => router.push('/(admin)')}
+        >
+          <FontAwesome5 name="user-shield" size={20} color="white" />
+        </TouchableOpacity>
+      )}
+      <ScrollView className="flex-1 px-4 pt-4">
+        <ProgressCard progress={mockProgress} />
+        <TestHistorySection tests={mockTests} />
+        <ThemesSection themes={mockThemes} />
+        <DailyTipCard tip={mockDailyTip} />
+        <FeaturedVideoCard video={mockFeaturedVideo} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
-export default DashboardScreen;
+export default HomeScreen;

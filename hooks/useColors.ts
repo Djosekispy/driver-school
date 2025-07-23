@@ -1,0 +1,30 @@
+
+export const COLORS = {
+  yellowLighten5: '#fffde7',
+  yellowLighten4: '#fff9c4',
+  yellowLighten3: '#fff59d',
+  yellowLighten2: '#fff176',
+  yellowLighten1: '#ffee58',
+  yellow: '#ffeb3b',
+  yellowDarken1: '#fdd835',
+  yellowDarken2: '#fbc02d',
+  yellowDarken3: '#f9a825',
+  yellowDarken4: '#f57f17',
+  yellowAccent1: '#ffff8d',
+  yellowAccent2: '#ffff00',
+  yellowAccent3: '#ffea00',
+  yellowAccent4: '#ffd600',
+  primary: '#f57f17',
+  secondary: '#fbc02d',
+  background: '#F3F5FD',
+  text: '#212121',
+  textLight: '#757575',
+    surface: '#ffffff' ,
+      error: '#E74C3C',        
+  errorLight: '#FDEDEC',    
+  success: '#2ECC71',       
+  warning: '#F39C12',      
+  info: '#3498DB',         
+    border: '#E0E0E0'
+};
+

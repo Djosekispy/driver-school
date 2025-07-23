@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { AuthLayout } from '@/components/auth/layout/AuthLayout';
 import { Input } from '@/components/auth/ui/Input';
@@ -8,14 +8,18 @@ import { useAuthForm } from '@/components/auth/hooks/useAuthForm';
 import { SignInFormData } from '@/components/auth/types/auth';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export default function Login(){
      const { control, handleSubmit, errors } = useAuthForm();
+      const router = useRouter();
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log(data);
-    // Handle sign in logic here
+
+
+  const onSubmit = async (data: SignInFormData) => {
+    
+      console.log(data)
+  
   };
 
     return (
