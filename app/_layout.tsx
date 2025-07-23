@@ -8,6 +8,7 @@ import "../css/global.css"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider } from '@/AuthContext/AuthContext';
 
 
 export {
@@ -44,6 +45,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
 
   return (
+    <AuthProvider>
     <SafeAreaView style={{flex: 1}}>
       <StatusBar  style='dark' translucent/>
      
@@ -54,5 +56,6 @@ function RootLayoutNav() {
            <Stack.Screen name="(details)" options={{ headerShown: false }} />
       </Stack>
       </SafeAreaView>
+      </AuthProvider>
   );
 }

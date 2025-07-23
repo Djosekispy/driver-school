@@ -7,7 +7,7 @@ import 'react-native-reanimated';
 import "../css/global.css"
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthProvider } from '@/AuthContext/AuthContext';
+import { AuthProvider } from './AuthContext';
 
 
 export {

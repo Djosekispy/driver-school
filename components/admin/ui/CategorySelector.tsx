@@ -69,12 +69,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                   }}
                 >
                   <View className="flex-row items-center">
-                    {item.icon && (
-                      <View className="w-8 h-8 rounded-full items-center justify-center mr-3" 
-                        style={{ backgroundColor: COLORS.yellowLighten5 }}>
-                        <Feather name={item.icon} size={16} color={COLORS.primary} />
-                      </View>
-                    )}
+                  
                     <View className="flex-1">
                       <Text className="font-medium" style={{ color: COLORS.text }}>{item.name}</Text>
                       {item.description && (

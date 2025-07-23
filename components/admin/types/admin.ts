@@ -20,8 +20,7 @@ export interface AdminUser extends AdminItem {
 export interface Category {
   id: string;
   name: string;
-  description: string;
-  icon: keyof typeof Feather.glyphMap;
+  description?: string;
 }
 
 export interface Question {

@@ -30,7 +30,7 @@ const AdminQuickActions: React.FC = () => {
     {
       icon: 'video',
       label: 'Nova Aula',
-      screen: 'VideoCreate',
+      screen: '/(admin)/VideoCreate',
       color: COLORS.info
     },
     {
