@@ -34,8 +34,6 @@
     },
     "plugins": [
       "expo-router",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth",
       [
         "expo-dev-client",
         {
@@ -74,11 +72,17 @@
           }
         }
       ],
-     [
+      [
         "expo-secure-store",
         {
           "configureAndroidBackup": true,
           "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
+      ],
+    [
+        "expo-web-browser",
+        {
+          "experimentalLauncherActivity": true
         }
       ]
     ],

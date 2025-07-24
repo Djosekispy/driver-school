@@ -1,96 +1,173 @@
-import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { AuthLayout } from '@/components/auth/layout/AuthLayout';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+} from 'react-native';
 import { Input } from '@/components/auth/ui/Input';
-import { Button } from '@/components/auth/ui/Button';
 import { SocialButton } from '@/components/auth/ui/SocialButton';
-import { useAuthForm } from '@/components/auth/hooks/useAuthForm';
-import { SignInFormData } from '@/components/auth/types/auth';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link, useRouter } from 'expo-router';
-import { useAuth } from '@/AuthContext/AuthContext';
+import { useAuthForm } from '@/components/auth/hooks/useAuthForm';
+import { SignInFormData } from '@/components/auth/types/auth';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthContext';
+import { COLORS } from '@/hooks/useColors';
 
-export default function Login(){
-     const { control, handleSubmit, errors } = useAuthForm();
-    const { isAuthenticated, isLoading , login} = useAuth();
-      const router = useRouter();
+export default function Login() {
+ 
+  const { isAuthenticated, isLoading, login } = useAuth();
+  const {email, password } = useLocalSearchParams<{email : string, password : string}>();
+  const router = useRouter();
+   const { control, handleSubmit, errors } = useAuthForm({email, password});
 
-      useEffect(() => {
-        if (!isLoading && isAuthenticated) {
-          router.replace('/(home)'); 
-        }
-      }, [isAuthenticated, isLoading]);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/(home)');
+    }
+  }, [isAuthenticated, isLoading]);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   const onSubmit = async (data: SignInFormData) => {
     try {
-      await login(data.email,data.password);
+      await login(data.email, data.password);
     } catch (error) {
-      console.error('Error ao fazer login',error)
+      console.error('Erro ao fazer login', error);
     }
   };
 
-    return (
-        <AuthLayout
-      title="Bem Vindo"
-      subtitle="Digite suas credencias e comece sua jornada, e conte conosco para qualquer coisa"
+  return (
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: COLORS.background,
+        justifyContent: 'center',
+        padding: 24,
+      }}
+      showsVerticalScrollIndicator={false}
     >
-      {/* Social Login Buttons */}
-      <View className='flex-row gap-4 justify-center items-center'>
-     <SocialButton
-        icon={ <Entypo name="facebook-with-circle" size={24} color="black" />}
-        text="Facebook"
-        onPress={() => console.log('Facebook login')}
-      />
-      <SocialButton
-        icon={<AntDesign name="google" size={24} color="black" />}
-        text="Google"
-        onPress={() => console.log('Google login')}
-      />
-      </View>
- 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1 justify-center"
+      >
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          {/* Mensagem de boas-vindas */}
+          <View className="mb-8 items-center">
+            <Text
+              style={{
+                fontSize: 26,
+                fontWeight: '700',
+                color: COLORS.primary,
+                marginBottom: 8,
+              }}
+            >
+              Bem-vindo!
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                textAlign: 'center',
+                color: COLORS.textLight,
+                paddingHorizontal: 10,
+              }}
+            >
+              Digite suas credenciais e comece sua jornada. Conte conosco para o que precisar.
+            </Text>
+          </View>
 
-      {/* Divider */}
-      <View className='flex-row items-center my-6'>
-        <View className='flex-1 h-px bg-gray-300' />
-        <Text className='px-4 text-gray-500'>Ou</Text>
-        <View className='flex-1 h-px bg-gray-300' />
-      </View>
+          {/* Social Buttons */}
+          <View className="flex-row justify-center gap-4 mb-6">
+            <SocialButton
+              icon={<Entypo name="facebook-with-circle" size={24} color="black" />}
+              text="Facebook"
+              onPress={() => console.log('Facebook login')}
+            />
+            <SocialButton
+              icon={<AntDesign name="google" size={24} color="black" />}
+              text="Google"
+              onPress={() => console.log('Google login')}
+            />
+          </View>
 
-      {/* Email Input */}
-      <Input
-        control={control}
-        name="email"
-        placeholder="alphainvent@gmail.com"
-        error={errors.email}
-      />
+          {/* Divider */}
+          <View className="flex-row items-center mb-6">
+            <View className="flex-1 h-px bg-gray-300" />
+            <Text className="px-4 text-gray-500">ou</Text>
+            <View className="flex-1 h-px bg-gray-300" />
+          </View>
 
-      {/* Password Input */}
-      <Input
-        control={control}
-        name="password"
-        placeholder="••••••••"
-        error={errors.password}
-        secureTextEntry
-      />
+          {/* Form Inputs */}
+          <Input
+            control={control}
+            name="email"
+            placeholder="alphainvent@gmail.com"
+            error={errors.email}
+          />
+          <Input
+            control={control}
+            name="password"
+            placeholder="••••••••"
+            error={errors.password}
+            secureTextEntry
+          />
 
-      {/* Forgot Password */}
-      <TouchableOpacity className='items-end mb-6'>
-        <Text className='text-blue-600'>Esqueceu sua senha?</Text>
-      </TouchableOpacity>
+          {/* Forgot Password */}
+          <TouchableOpacity className="items-end mb-4">
+            <Text style={{ color: COLORS.primary, fontWeight: '500' }}>
+              Esqueceu sua senha?
+            </Text>
+          </TouchableOpacity>
 
-      {/* Sign In Button */}
-      <Button title="Entrar" onPress={handleSubmit(onSubmit)} />
+          {/* Submit Button */}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            className="justify-center items-center p-4 rounded-md mb-4"
+            style={{ backgroundColor: COLORS.primary }}
+            onPress={handleSubmit(onSubmit)}
+          >
+            <Text className="text-lg font-semibold" style={{ color: COLORS.surface }}>
+              Entrar
+            </Text>
+          </TouchableOpacity>
 
-      {/* Sign Up Link */}
-      <View className='flex-row justify-center mt-4'>
-        <Text className='text-gray-500'>Ainda não tem uma conta? </Text>
-        <Link asChild href={'/(auth)/register'}>
-        <TouchableOpacity>
-          <Text className='text-blue-600'>Cadastar-se</Text>
-        </TouchableOpacity>
-        </Link>
-      </View>
-    </AuthLayout>
-    );
+          {/* Sign Up Link */}
+          <View className="flex-row justify-center mt-2">
+            <Text className="text-gray-500">Ainda não tem uma conta? </Text>
+            <Link asChild href="/(auth)/register">
+              <TouchableOpacity>
+                <Text style={{ color: COLORS.primary, fontWeight: '600' }}>
+                  Cadastrar-se
+                </Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
+        </Animated.View>
+      </KeyboardAvoidingView>
+    </ScrollView>
+  );
 }

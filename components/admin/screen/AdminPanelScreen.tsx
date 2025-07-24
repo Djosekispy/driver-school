@@ -18,12 +18,13 @@ import { mockVideoLessons } from '../data/videoLessons.mock';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useRouter } from 'expo-router';
+import VideoList from './VideoList';
 
 
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'tests' | 'signs' | 'videos'>('dashboard');
-
+  const router = useRouter();
  
 
   const statsData = {
@@ -56,6 +57,8 @@ const AdminDashboard = () => {
         return <AdminContentSection type="tests" data={mockAdminTests} categories={mockCategories} />;
       case 'signs':
         return <AdminContentSection type="signs" data={mockTrafficSigns} categories={mockCategories} />;
+          case 'videos':
+        return router.push('/(videos)/VideoList');
         default:
         return null;
     }

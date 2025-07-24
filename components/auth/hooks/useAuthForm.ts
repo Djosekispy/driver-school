@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { SignInFormData } from '../types/auth';
 
 const schema = yup
   .object({
@@ -9,7 +10,7 @@ const schema = yup
   })
   .required()
 
-export const useAuthForm = () => {
+export const useAuthForm = (data : SignInFormData) => {
   const {
     control,
     handleSubmit,
@@ -17,8 +18,8 @@ export const useAuthForm = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: data.email || '',
+      password: data.password || '',
     },
   });
 

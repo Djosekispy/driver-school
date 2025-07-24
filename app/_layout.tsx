@@ -7,7 +7,8 @@ import 'react-native-reanimated';
 import "../css/global.css"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { AuthProvider } from '@/AuthContext/AuthContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { FirebaseProvider } from '@/context/FirebaseContext';
 
 
 export {
@@ -45,6 +46,7 @@ function RootLayoutNav() {
 
   return (
     <AuthProvider>
+      <FirebaseProvider>
     <SafeAreaView style={{flex: 1}}>
       <StatusBar  style='dark' translucent/>
      
@@ -55,6 +57,7 @@ function RootLayoutNav() {
            <Stack.Screen name="(details)" options={{ headerShown: false }} />
       </Stack>
       </SafeAreaView>
+      </FirebaseProvider>
       </AuthProvider>
   );
 }
