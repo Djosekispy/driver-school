@@ -11,4 +11,7 @@ export interface TrafficSign {
   description: string;
   imageUrl: string;
   category: TrafficSignCategory;
+   meaning?: string,
+  rules?: string[]
+  commonMistakes?: string[] 
 }

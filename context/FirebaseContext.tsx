@@ -78,17 +78,19 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // Carregamento inicial de dados
   const loadInitialData = async () => {
-    const [videos, signs, tests, userList] = await Promise.all([
+    const [videos, signs, tests, userList, logs] = await Promise.all([
       fetchVideoLessons(),
       fetchTrafficSigns(),
       fetchQuizTests(),
-      fetchUsers()
+      fetchUsers(),
+      fetchLogs()
     ]);
 
     setVideoLessons(videos);
     setTrafficSigns(signs);
     setQuizTests(tests);
     setUsers(userList);
+    setLogs(logs)
   };
 
   // Carregamentos individuais

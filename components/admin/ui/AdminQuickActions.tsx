@@ -36,7 +36,7 @@ const AdminQuickActions: React.FC = () => {
     {
       icon: 'loader',
       label: 'Novo Sinal',
-      screen: '/(admin)/SignCreate',
+      screen: '/(signal)/create',
       color: COLORS.warning
     }
   ];

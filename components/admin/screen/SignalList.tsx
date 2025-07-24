@@ -9,27 +9,45 @@ import {
   Modal,
   Platform,
   TextInput,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 import { COLORS } from '@/hooks/useColors';
 import { useNavigation, useRouter } from 'expo-router';
 import { AntDesign, Feather, MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TrafficSign, TrafficSignCategory } from '@/types/TrafficSign';
 import { useFirebase } from '@/context/FirebaseContext';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/firebase/firebase';
 
 const TrafficSignList = () => {
-  const { trafficSigns, loadTrafficSigns, deleteSign } = useFirebase();
+  const { 
+    trafficSigns, 
+    loadTrafficSigns, 
+    deleteSign,
+    createSign,
+    updateSign,
+    getSignById
+  } = useFirebase();
   const router = useRouter();
   const [selectedSign, setSelectedSign] = useState<TrafficSign | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<TrafficSignCategory | 'todos'>('todos');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   
   useEffect(() => {
-    loadTrafficSigns();
+    const loadData = async () => {
+      setIsLoading(true);
+      await loadTrafficSigns();
+      setIsLoading(false);
+    };
+    loadData();
   }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     Alert.alert(
       'Confirmar Exclusão',
       'Tem certeza que deseja excluir este sinal de trânsito?',
@@ -38,9 +56,15 @@ const TrafficSignList = () => {
         {
           text: 'Excluir',
           style: 'destructive',
-          onPress: () => deleteSign(id).catch(() => 
-            Alert.alert('Erro', 'Falha ao excluir sinal de trânsito')
-          ),
+          onPress: async () => {
+            try {
+              await deleteSign(id);
+              Alert.alert('Sucesso', 'Sinal excluído com sucesso');
+            } catch (error) {
+              console.error('Erro ao excluir sinal:', error);
+              Alert.alert('Erro', 'Falha ao excluir sinal de trânsito');
+            }
+          },
         },
       ]
     );
@@ -53,6 +77,27 @@ const TrafficSignList = () => {
   const handlePreview = (sign: TrafficSign) => {
     setSelectedSign(sign);
     setModalVisible(true);
+  };
+
+  const handleAddNew = () => {
+    router.push('/(signal)/create');
+  };
+
+  const uploadImage = async (uri: string) => {
+    setIsUploading(true);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `traffic-signs/${Date.now()}`);
+      const snapshot = await uploadBytes(storageRef, blob);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return downloadURL;
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const getCategoryStyle = (category: TrafficSignCategory) => {
@@ -84,7 +129,6 @@ const TrafficSignList = () => {
 
   const renderItem = ({ item }: { item: TrafficSign }) => {
     const categoryStyle = getCategoryStyle(item.category);
-    const imageUrl = item.imageUrl || `https://picsum.photos/seed/${item.id}/300/200`;
 
     return (
       <TouchableOpacity 
@@ -103,11 +147,21 @@ const TrafficSignList = () => {
         >
           {/* Imagem do sinal */}
           <View className="h-48 bg-gray-200 relative">
-            <Image 
-              source={{ uri: imageUrl }} 
-              className="w-full h-full"
-              resizeMode="contain"
-            />
+            {item.imageUrl ? (
+              <Image 
+                source={{ uri: item.imageUrl }} 
+                className="w-full h-full"
+                resizeMode="contain"
+              />
+            ) : (
+              <View className="flex-1 items-center justify-center bg-gray-100">
+                <MaterialCommunityIcons 
+                  name="traffic-light" 
+                  size={48} 
+                  color={COLORS.textLight} 
+                />
+              </View>
+            )}
             
             {/* Categoria Badge */}
             <View 
@@ -184,6 +238,14 @@ const TrafficSignList = () => {
       </TouchableOpacity>
     );
   };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <View 
@@ -308,6 +370,8 @@ const TrafficSignList = () => {
             </Text>
           </View>
         }
+        refreshing={isLoading}
+        onRefresh={loadTrafficSigns}
       />
 
       {/* Botão de adicionar */}
@@ -321,9 +385,14 @@ const TrafficSignList = () => {
           shadowRadius: 4,
           elevation: 5,
         }}
-        onPress={() => router.push('/(traffic-signs)/create')}
+        onPress={handleAddNew}
+        disabled={isUploading}
       >
-        <Feather name="plus" size={24} color="white" />
+        {isUploading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Feather name="plus" size={24} color="white" />
+        )}
       </TouchableOpacity>
 
       {/* Modal de visualização */}
@@ -352,11 +421,19 @@ const TrafficSignList = () => {
               <View className="bg-white rounded-2xl p-6">
                 {/* Imagem em destaque */}
                 <View className="h-64 bg-gray-100 rounded-xl mb-4 items-center justify-center">
-                  <Image 
-                    source={{ uri: selectedSign.imageUrl }} 
-                    className="w-full h-full"
-                    resizeMode="contain"
-                  />
+                  {selectedSign.imageUrl ? (
+                    <Image 
+                      source={{ uri: selectedSign.imageUrl }} 
+                      className="w-full h-full"
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <MaterialCommunityIcons 
+                      name="traffic-light" 
+                      size={64} 
+                      color={COLORS.textLight} 
+                    />
+                  )}
                 </View>
 
                 {/* Categoria */}

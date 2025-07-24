@@ -8,9 +8,11 @@ import AdminRecentActivity from '../ui/AdminRecentActivity';
 import { COLORS } from '@/hooks/useColors';
 import { ActivityItem } from '../types/admin';
 import { Href, useRouter } from 'expo-router';
+import { useFirebase } from '@/context/FirebaseContext';
 
 const AdminDashboard = () => {
   const router = useRouter();
+  const { logs } = useFirebase()
 
   const statsData = {
     totalUsers: 1245,
@@ -19,13 +21,7 @@ const AdminDashboard = () => {
     videoLessons: 32,
     recentRegistrations: 24
   };
-
-  const recentActivities: ActivityItem[] = [
-    { id: '1', type: 'user', action: 'Novo cadastro', name: 'João Silva', time: '10 min atrás' },
-    { id: '2', type: 'test', action: 'Teste completado', name: 'Legislação Básica', time: '25 min atrás' },
-    { id: '3', type: 'video', action: 'Vídeo adicionado', name: 'Direção Noturna', time: '2 horas atrás' }
-  ];
-
+  
   const navigationButtons = [
     {
       label: 'Usuários',
@@ -92,7 +88,7 @@ const AdminDashboard = () => {
         {/* Conteúdo do Dashboard */}
         <AdminStats data={statsData} />
         <AdminQuickActions />
-        <AdminRecentActivity activities={recentActivities} />
+        <AdminRecentActivity activities={logs} />
       </ScrollView>
     </View>
   );
