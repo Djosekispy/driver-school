@@ -22,6 +22,7 @@ import { User } from '@/types/User';
 import Toast from '@/components/ui/toast';
 import LoadingModal from '@/components/ui/loading';
 import { auth, db } from '@/firebase/firebase';
+import { createLog } from '@/services/logService';
 
 interface AuthContextType {
   user: User | null;
@@ -163,6 +164,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
 
       await addDoc(collection(db, "users"), newUser);
+       await createLog({createdBy : '001', title : `Novo Usuário`, discription : String(userData.name) , type:'user'});
+      
       router.push({
         pathname: '/(auth)/login',
         params: { email: userData.email, password }

@@ -1,31 +1,16 @@
-import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import React from 'react';
+import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import AdminHeader from '../ui/AdminHeader';
-import AdminTabs from '../ui/AdminTabs';
-import { 
-  mockAdminUsers, 
-  mockAdminTests, 
-  mockCategories
-} from '../data/admin.mock';
 import AdminStats from '../ui/AdminStats';
 import AdminQuickActions from '../ui/AdminQuickActions';
 import AdminRecentActivity from '../ui/AdminRecentActivity';
-import AdminContentSection from '../ui/AdminContentSection';
 import { COLORS } from '@/hooks/useColors';
 import { ActivityItem } from '../types/admin';
-import { mockTrafficSigns } from '../data/trafficSigns.mock';
-import { mockVideoLessons } from '../data/videoLessons.mock';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { useRouter } from 'expo-router';
-import VideoList from './VideoList';
-
-
+import { Href, useRouter } from 'expo-router';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'users' | 'tests' | 'signs' | 'videos'>('dashboard');
   const router = useRouter();
- 
 
   const statsData = {
     totalUsers: 1245,
@@ -41,43 +26,73 @@ const AdminDashboard = () => {
     { id: '3', type: 'video', action: 'Vídeo adicionado', name: 'Direção Noturna', time: '2 horas atrás' }
   ];
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return (
-          <>
-            <AdminStats data={statsData} />
-            <AdminQuickActions />
-            <AdminRecentActivity activities={recentActivities} />
-          </>
-        );
-      case 'users':
-        return <AdminContentSection type="users" data={mockAdminUsers} />;
-      case 'tests':
-        return <AdminContentSection type="tests" data={mockAdminTests} categories={mockCategories} />;
-      case 'signs':
-        return <AdminContentSection type="signs" data={mockTrafficSigns} categories={mockCategories} />;
-          case 'videos':
-        return router.push('/(videos)/VideoList');
-        default:
-        return null;
-    }
+  const navigationButtons = [
+    {
+      label: 'Usuários',
+      icon: 'users',
+      path: '/admin/users',
+      bgColor: COLORS.primary,
+    },
+    {
+      label: 'Testes',
+      icon: 'file-text',
+      path: '/admin/tests',
+      bgColor: '#FFB703',
+    },
+    {
+      label: 'Sinais',
+      icon: 'alert-circle',
+      path: '/(signal)/signs',
+      bgColor: '#E63946',
+    },
+    {
+      label: 'Vídeos',
+      icon: 'video',
+      path: '/(videos)/VideoList',
+      bgColor: '#3A86FF',
+    },
+  ];
+
+  const handleNavigate = (path: string) => {
+    router.push(path as Href);
   };
 
   return (
     <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
-      <AdminHeader 
-        title="Painel de Administração"  
-      />
-
-      <AdminTabs 
-        activeTab={activeTab} 
-        onChangeTab={(tab: 'dashboard' | 'users' | 'tests' | 'signs' | 'videos') => setActiveTab(tab)} 
-        
-      />
+      <AdminHeader title="Painel de Administração" />
 
       <ScrollView className="flex-1 px-5 pt-4">
-        {renderContent()}
+        {/* Botões de Navegação */}
+        <View className="flex-row flex-wrap justify-between mb-6">
+          {navigationButtons.map((btn, idx) => (
+            <TouchableOpacity
+              key={idx}
+              onPress={() => handleNavigate(btn.path)}
+              style={{
+                backgroundColor: btn.bgColor,
+                width: '47%',
+                marginBottom: 12,
+                borderRadius: 16,
+                paddingVertical: 16,
+                paddingHorizontal: 12,
+                shadowColor: '#000',
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+                elevation: 4,
+              }}
+            >
+              <View className="flex-row items-center justify-center">
+                <Feather name={btn.icon as any} size={20} color="#fff" />
+                <Text className="text-white text-base font-semibold ml-2">{btn.label}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Conteúdo do Dashboard */}
+        <AdminStats data={statsData} />
+        <AdminQuickActions />
+        <AdminRecentActivity activities={recentActivities} />
       </ScrollView>
     </View>
   );

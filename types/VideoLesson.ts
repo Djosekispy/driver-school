@@ -1,3 +1,5 @@
+export type VideoLessonCategory = 'teórica' | 'prática' | 'legislação';
+
 export interface VideoLesson {
   id: string;
   title: string;
@@ -5,7 +7,7 @@ export interface VideoLesson {
   videoUrl: string;
   thumbnailUrl?: string;
   durationInMinutes?: number;
-  category: 'teórica' | 'prática' | 'legislação';
+  category: VideoLessonCategory,
   createdAt: Date;
   updatedAt: Date;
   createdBy: string; 

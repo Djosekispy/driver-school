@@ -10,6 +10,7 @@ import {
   getDoc,
   Timestamp,
 } from 'firebase/firestore';
+import { createLog } from './logService';
 
 const COLLECTION = 'videoLessons';
 
@@ -32,6 +33,8 @@ export const createVideoLesson = async (data: Omit<VideoLesson, 'id' | 'createdA
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   });
+
+  await createLog({createdBy : '001', title : 'Video adicionado', discription : data.title, type:'video'});
 };
 
 export const updateVideoLesson = async (id: string, data: Partial<VideoLesson>) => {
@@ -40,11 +43,14 @@ export const updateVideoLesson = async (id: string, data: Partial<VideoLesson>) 
     ...data,
     updatedAt: Timestamp.now(),
   });
+  
+  await createLog({createdBy : '001', title : `Video ${id} actualizado`, discription : String(data.title), type:'video'});
 };
 
 export const deleteVideoLesson = async (id: string) => {
   const ref = doc(db, COLLECTION, id);
   await deleteDoc(ref);
+   await createLog({createdBy : '001', title : `Video ${id} deletado`, discription : 'Um registro de video foi apagado', type:'video'});
 };
 
 export const getVideoLesson = async (id: string): Promise<VideoLesson | null> => {

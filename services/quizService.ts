@@ -13,6 +13,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import { createLog } from './logService';
 
 const testCollection = 'quizTests';
 const questionCollection = 'quizQuestions';
@@ -26,6 +27,8 @@ export const fetchQuizTests = async (): Promise<QuizTest[]> => {
 
 export const createQuizTest = async (data: Omit<QuizTest, 'id'>) => {
   await addDoc(collection(db, testCollection), data);
+  
+     await createLog({createdBy : '001', title : `Novo Teste Adicionado`, discription : data.category , type:'test'});
 };
 
 export const updateQuizTest = async (
@@ -33,10 +36,13 @@ export const updateQuizTest = async (
   data: Partial<Omit<QuizTest, 'id'>>
 ) => {
   await updateDoc(doc(db, testCollection, id), data);
+  
+     await createLog({createdBy : '001', title : `Teste ${id} actualizado`, discription : String(data.category) , type:'test'});
 };
 
 export const deleteQuizTest = async (id: string) => {
   await deleteDoc(doc(db, testCollection, id));
+   await createLog({createdBy : '001', title : `Teste ${id} deletado`, discription : 'Seu Teste foi deletado com sucesso' , type:'test'});
 };
 
 // Quiz Question
@@ -48,6 +54,7 @@ export const fetchQuizQuestionsByTest = async (quizTestId: number): Promise<Quiz
 
 export const createQuizQuestion = async (data: Omit<QuizQuestion, 'id'>) => {
   await addDoc(collection(db, questionCollection), data);
+   await createLog({createdBy : '001', title : `Nova questão adicionada`, discription : String(data.category) , type:'test'});
 };
 
 export const updateQuizQuestion = async (
@@ -55,10 +62,13 @@ export const updateQuizQuestion = async (
   data: Partial<Omit<QuizQuestion, 'id'>>
 ) => {
   await updateDoc(doc(db, questionCollection, id), data);
+  
+   await createLog({createdBy : '001', title : `Questão ${id} actualizada`, discription : String(data.category) , type:'test'});
 };
 
 export const deleteQuizQuestion = async (id: string) => {
   await deleteDoc(doc(db, questionCollection, id));
+  await createLog({createdBy : '001', title : `Questão ${id} deletada`, discription : 'Questão foi deletada com sucesso' , type:'test'});
 };
 
 // Quiz Result

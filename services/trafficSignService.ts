@@ -9,6 +9,7 @@ import {
   updateDoc,
   getDoc,
 } from 'firebase/firestore';
+import { createLog } from './logService';
 
 const COLLECTION = 'trafficSigns';
 
@@ -22,6 +23,7 @@ export const fetchTrafficSigns = async (): Promise<TrafficSign[]> => {
 
 export const createTrafficSign = async (data: Omit<TrafficSign, 'id'>) => {
   await addDoc(collection(db, COLLECTION), data);
+   await createLog({createdBy : '001', title : `Sinal adicionada`, discription : data.category, type:'signal'});
 };
 
 export const updateTrafficSign = async (
@@ -30,11 +32,13 @@ export const updateTrafficSign = async (
 ) => {
   const ref = doc(db, COLLECTION, id);
   await updateDoc(ref, data);
+  await createLog({createdBy : '001', title : `Sinal ${id} actualizado`, discription : String(data.category), type:'signal'});
 };
 
 export const deleteTrafficSign = async (id: string) => {
   const ref = doc(db, COLLECTION, id);
   await deleteDoc(ref);
+   await createLog({createdBy : '001', title : `Sinal  deletado`, discription : `O sinal ${id} foi apagado`, type:'signal'});
 };
 
 export const getTrafficSignById = async (

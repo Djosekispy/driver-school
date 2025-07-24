@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Image
+  View, Text, TextInput, TouchableOpacity, ScrollView,
+  Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image
 } from 'react-native';
-import { Feather, MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/hooks/useColors';
-import { useRouter } from 'expo-router';
-import CategorySelector from '../ui/CategorySelector';
-import YoutubePlayer from 'react-native-youtube-iframe';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useFirebase } from '@/context/FirebaseContext';
+import CategorySelector from '@/components/admin/ui/CategorySelector';
+import { VideoLesson } from '@/types/VideoLesson';
 
 const videoCategories = [
   { id: 'teórica', name: 'Teórica' },
@@ -30,20 +22,53 @@ const extractYouTubeId = (url: string) => {
   return (match && match[2].length === 11) ? match[2] : null;
 };
 
-const AddVideoLessonScreen = () => {
+const EditVideoLessonScreen = () => {
   const router = useRouter();
-  const { addVideoLesson } = useFirebase();
-  const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    description: '',
-    videoUrl: '',
-    durationInMinutes: ''
-  });
+  const { id } = useLocalSearchParams(); 
+  const { getVideoLessonById, modifyVideoLesson } = useFirebase();
+
+const [formData, setFormData] = useState<Omit<VideoLesson, 'createdAt' | 'id' | 'updatedAt' | 'createdBy'>>({
+  title: '',
+  category: 'teórica',
+  description: '',
+  videoUrl: '',
+  durationInMinutes: 0
+});
+
+
+  const handleCategoryChange = (id: string) => {
+    // Garantindo que apenas valores válidos sejam aceitos
+    if (id === 'teórica' || id === 'prática' || id === 'legislação') {
+      setFormData({ ...formData, category: id });
+    }
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [isValidUrl, setIsValidUrl] = useState(false);
-  const descriptionInputRef = React.useRef<TextInput>(null);
+  const [isFetching, setIsFetching] = useState(true);
 
+  useEffect(() => {
+    const loadLesson = async () => {
+      if (!id || typeof id !== 'string') return;
+      const video = await getVideoLessonById(id);
+      if (!video) {
+        Alert.alert('Erro', 'Videoaula não encontrada');
+        router.back();
+        return;
+      }
+
+      setFormData({
+        title: video.title,
+        category: video.category,
+        description: video.description || '',
+        videoUrl: video.videoUrl,
+        durationInMinutes: parseInt(String(video.durationInMinutes)) 
+      });
+      setIsValidUrl(extractYouTubeId(video.videoUrl) !== null);
+      setIsFetching(false);
+    };
+
+    loadLesson();
+  }, [id]);
 
   const handleUrlChange = (text: string) => {
     setFormData({ ...formData, videoUrl: text });
@@ -63,22 +88,21 @@ const AddVideoLessonScreen = () => {
 
     setIsLoading(true);
     try {
-      await addVideoLesson({
-        title: formData.title,
-        category: formData.category as any,
-        description: formData.description,
-        videoUrl: formData.videoUrl,
-        durationInMinutes: formData.durationInMinutes ? parseInt(formData.durationInMinutes) : undefined,
+      await modifyVideoLesson(id as string, {
+        ...formData,
+        durationInMinutes: formData.durationInMinutes
+  ? parseInt(String(formData.durationInMinutes))
+  : undefined,
+        category : formData.category,
         thumbnailUrl: `https://img.youtube.com/vi/${extractYouTubeId(formData.videoUrl)}/hqdefault.jpg`,
-        createdBy: '001'
       });
 
-      Alert.alert('Sucesso', 'Videoaula cadastrada com sucesso!', [
+      Alert.alert('Sucesso', 'Videoaula atualizada com sucesso!', [
         { text: 'OK', onPress: () => router.back() }
       ]);
     } catch (error) {
-      console.error('Erro ao salvar vídeo:', error);
-      Alert.alert('Erro', 'Não foi possível salvar a videoaula');
+      console.error('Erro ao atualizar vídeo:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar a videoaula');
     } finally {
       setIsLoading(false);
     }
@@ -87,35 +111,53 @@ const AddVideoLessonScreen = () => {
   const youtubeId = extractYouTubeId(formData.videoUrl);
   const thumbnailUrl = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : null;
 
+  if (isFetching) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1"
       style={{ backgroundColor: COLORS.background }}
-      keyboardVerticalOffset={Platform.select({ ios: 90, android: 0 })}
     >
-       <ScrollView 
-        className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 120 }}
-        keyboardShouldPersistTaps="handled"
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-4 pt-12 pb-4 border-b"
+        style={{
+          backgroundColor: COLORS.surface,
+          borderBottomColor: COLORS.border,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 2,
+        }}
       >
-        {/* Header */}
-        <View className="flex-row items-center justify-between mb-6">
-          <TouchableOpacity 
-            onPress={() => router.back()} 
-            className="p-2 rounded-full"
-            style={{ backgroundColor: COLORS.yellowLighten4 }}
-          >
-            <Feather name="arrow-left" size={20} color={COLORS.yellowDarken4} />
-          </TouchableOpacity>
-          
-          <Text className="text-lg font-bold" style={{ color: COLORS.text }}>
-            Nova Videoaula
-          </Text>
-          
-          <View className="w-8" />
-        </View>
-        {/* Preview Section */}
+        <TouchableOpacity 
+          onPress={() => router.back()} 
+          className="p-2 rounded-full"
+          style={{ backgroundColor: COLORS.yellowLighten4 }}
+        >
+          <Feather name="arrow-left" size={20} color={COLORS.yellowDarken4} />
+        </TouchableOpacity>
+        
+        <Text className="text-lg font-bold" style={{ color: COLORS.text }}>
+          Editar Videoaula
+        </Text>
+        
+        <View className="w-8" />
+      </View>
+
+      <ScrollView 
+        className="px-4 pt-4" 
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Thumbnail preview (igual ao de Add) */}
         {(youtubeId || formData.title) && (
           <View className="mb-6 rounded-xl overflow-hidden"
             style={{
@@ -126,7 +168,6 @@ const AddVideoLessonScreen = () => {
               elevation: 4
             }}
           >
-            {/* Thumbnail */}
             <View className="h-40 bg-gray-200 relative">
               {youtubeId ? (
                 <Image 
@@ -142,17 +183,10 @@ const AddVideoLessonScreen = () => {
                 </View>
               )}
             </View>
-
-            {/* Video Info */}
             <View className="p-4">
-              <Text 
-                className="text-lg font-bold mb-1" 
-                style={{ color: COLORS.text }}
-                numberOfLines={2}
-              >
+              <Text className="text-lg font-bold mb-1" style={{ color: COLORS.text }} numberOfLines={2}>
                 {formData.title || 'Sem título'}
               </Text>
-              
               {formData.category && (
                 <View className="self-start px-3 py-1 rounded-full mb-2"
                   style={{ 
@@ -171,7 +205,7 @@ const AddVideoLessonScreen = () => {
           </View>
         )}
 
-        {/* Form Section */}
+             {/* Form Section */}
         <View className="space-y-4">
           {/* Título */}
           <View>
@@ -201,15 +235,13 @@ const AddVideoLessonScreen = () => {
           </View>
 
           {/* Categoria */}
-          <View className='mt-2'>
-          
+        <View className='mt-2'>
             <CategorySelector
-              categories={videoCategories}
-              selectedId={formData.category}
-              onSelect={(id) => setFormData({ ...formData, category: id })}
+            categories={videoCategories}
+            selectedId={formData.category}
+            onSelect={handleCategoryChange} // Usando a função segura
             />
-          </View>
-
+        </View>
           {/* URL do YouTube */}
           <View>
             <View className="flex-row items-center mb-1">
@@ -263,8 +295,8 @@ const AddVideoLessonScreen = () => {
                 borderColor: COLORS.border,
                 borderWidth: 1
               }}
-              value={formData.durationInMinutes}
-              onChangeText={(text) => setFormData({ ...formData, durationInMinutes: text.replace(/[^0-9]/g, '') })}
+              value={String(formData.durationInMinutes)}
+              onChangeText={(text) => setFormData({ ...formData, durationInMinutes: parseInt(text.replace(/[^0-9]/g, '')) })}
               placeholder="Ex: 15"
               placeholderTextColor={COLORS.textLight}
               keyboardType="numeric"
@@ -295,7 +327,8 @@ const AddVideoLessonScreen = () => {
         </View>
       </ScrollView>
 
-       <View className="absolute bottom-6 right-6 z-10">
+      {/* Botão Flutuante */}
+      <View className="absolute bottom-6 right-6">
         <TouchableOpacity
           className="flex-row items-center justify-center p-4 rounded-full shadow-lg"
           style={{
@@ -316,7 +349,7 @@ const AddVideoLessonScreen = () => {
           ) : (
             <>
               <MaterialCommunityIcons 
-                name="content-save-check" 
+                name="content-save-edit" 
                 size={24} 
                 color="white" 
               />
@@ -329,4 +362,4 @@ const AddVideoLessonScreen = () => {
   );
 };
 
-export default AddVideoLessonScreen;
+export default EditVideoLessonScreen;

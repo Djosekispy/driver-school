@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { COLORS } from '@/hooks/useColors';
+import { useFirebase } from '@/context/FirebaseContext';
 
 interface StatItem {
   icon: keyof typeof Feather.glyphMap;
@@ -21,37 +22,46 @@ interface AdminStatsProps {
 }
 
 const AdminStats: React.FC<AdminStatsProps> = ({ data }) => {
+
+  const { users, trafficSigns, quizTests, videoLessons, quizQuestions, quizResults } = useFirebase();
   const stats: StatItem[] = [
     {
       icon: 'users',
-      value: data.totalUsers,
+      value: users.length,
       label: 'Usuários',
       color: COLORS.primary
     },
     {
       icon: 'file-text',
-      value: data.activeTests,
+      value: quizTests.length,
       label: 'Testes Ativos',
       color: COLORS.success
     },
     {
       icon: 'loader',
-      value: data.trafficSigns,
+      value: trafficSigns.length,
       label: 'Sinais',
       color: COLORS.warning
     },
     {
       icon: 'video',
-      value: data.videoLessons,
+      value: videoLessons.length,
       label: 'Vídeo Aulas',
       color: COLORS.info
     },
     {
-      icon: 'user-plus',
-      value: data.recentRegistrations,
-      label: 'Novos Registros',
+      icon: 'file-plus',
+      value: quizQuestions.length,
+      label: 'Peguntas',
+      color: COLORS.secondary
+    },
+     {
+      icon: 'file-text',
+      value: quizResults.length,
+      label: 'Peguntas respondidas',
       color: COLORS.secondary
     }
+
   ];
 
   return (
