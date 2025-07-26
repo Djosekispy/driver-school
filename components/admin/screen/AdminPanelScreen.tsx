@@ -32,7 +32,7 @@ const AdminDashboard = () => {
     {
       label: 'Testes',
       icon: 'file-text',
-      path: '/admin/tests',
+      path: '/(test)/test',
       bgColor: '#FFB703',
     },
     {

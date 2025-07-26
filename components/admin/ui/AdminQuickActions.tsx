@@ -16,12 +16,6 @@ const AdminQuickActions: React.FC = () => {
   const navigation = useRouter();
   const actions: QuickAction[] = [
     {
-      icon: 'user-plus',
-      label: 'Novo Usuário',
-      screen: 'UserCreate',
-      color: COLORS.primary
-    },
-    {
       icon: 'file-plus',
       label: 'Novo Teste',
       screen: '/(admin)/TestCreate',
