@@ -7,13 +7,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAtLq80MuX937AbGJQw82_qwbwXsmVduCI",
-  authDomain: "sorteio-13df5.firebaseapp.com",
-  databaseURL: "https://sorteio-13df5-default-rtdb.firebaseio.com",
-  projectId: "sorteio-13df5",
-  storageBucket: "sorteio-13df5.appspot.com",
-  messagingSenderId: "517479363665",
-  appId: "1:517479363665:web:c3f1c2b3945f4848507470"
+  apiKey: "AIzaSyD4m7CXbe7Gk1eULVX7jXgAkn3KOS8zEGc",
+  authDomain: "sikola-6e3ec.firebaseapp.com",
+  projectId: "sikola-6e3ec",
+  storageBucket: "sikola-6e3ec.appspot.com",
+  messagingSenderId: "196378007285",
+  appId: "1:196378007285:web:1ba362b2ae5565d84717bc",
+  measurementId: "G-PGH6DQHBB0"
+
 };
 
 // Inicializar App Firebase

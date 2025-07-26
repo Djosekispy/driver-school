@@ -48,12 +48,12 @@ function RootLayoutNav() {
     <AuthProvider>
       <FirebaseProvider>
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar  style='light' translucent/>
+      <StatusBar  style='dark' translucent/>
      
       <Stack screenOptions={{headerShown:false}}>
-          <Stack.Screen name="(home)" options={{ headerShown: false }} />
         <Stack.Screen name="(welcome)" options={{ headerShown: false }} />
          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(home)" options={{ headerShown: false }} />
            <Stack.Screen name="(details)" options={{ headerShown: false }} />
       </Stack>
       </SafeAreaView>

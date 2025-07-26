@@ -10,25 +10,20 @@ import {
   Platform,
   TextInput,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  StyleSheet
 } from 'react-native';
 import { COLORS } from '@/hooks/useColors';
-import { useNavigation, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { AntDesign, Feather, MaterialIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TrafficSign, TrafficSignCategory } from '@/types/TrafficSign';
 import { useFirebase } from '@/context/FirebaseContext';
-import * as ImagePicker from 'expo-image-picker';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/firebase/firebase';
 
 const TrafficSignList = () => {
   const { 
     trafficSigns, 
     loadTrafficSigns, 
-    deleteSign,
-    createSign,
-    updateSign,
-    getSignById
+    deleteSign
   } = useFirebase();
   const router = useRouter();
   const [selectedSign, setSelectedSign] = useState<TrafficSign | null>(null);
@@ -36,7 +31,6 @@ const TrafficSignList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<TrafficSignCategory | 'todos'>('todos');
   const [isLoading, setIsLoading] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
   
   useEffect(() => {
     const loadData = async () => {
@@ -70,34 +64,9 @@ const TrafficSignList = () => {
     );
   };
 
-  const handleEdit = (sign: TrafficSign) => {
-    router.push({ pathname: '/(traffic-signs)/update', params: { id: sign.id } });
-  };
-
   const handlePreview = (sign: TrafficSign) => {
     setSelectedSign(sign);
     setModalVisible(true);
-  };
-
-  const handleAddNew = () => {
-    router.push('/(signal)/create');
-  };
-
-  const uploadImage = async (uri: string) => {
-    setIsUploading(true);
-    try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const storageRef = ref(storage, `traffic-signs/${Date.now()}`);
-      const snapshot = await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
-    } catch (error) {
-      console.error('Erro no upload:', error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
   };
 
   const getCategoryStyle = (category: TrafficSignCategory) => {
@@ -112,13 +81,12 @@ const TrafficSignList = () => {
   };
 
   const filteredSigns = trafficSigns.filter(sign => {
-    const matchesSearch = sign.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         sign.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = sign.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'todos' || sign.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const categories: { id: TrafficSignCategory | 'todos'; name: string }[] = [
+  const categories = [
     { id: 'todos', name: 'Todos' },
     { id: 'regulamentação', name: 'Regulamentação' },
     { id: 'advertência', name: 'Advertência' },
@@ -132,109 +100,51 @@ const TrafficSignList = () => {
 
     return (
       <TouchableOpacity 
-        activeOpacity={0.9}
+        className="flex-row items-center p-3 mb-2 rounded-lg shadow-sm"
+        style={{ backgroundColor: COLORS.surface }}
+        activeOpacity={0.8}
         onPress={() => handlePreview(item)}
       >
-        <View 
-          className="mb-6 rounded-2xl overflow-hidden shadow-lg"
-          style={{ 
-            backgroundColor: COLORS.surface,
-            shadowColor: COLORS.yellowDarken4,
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-            elevation: 4
-          }}
-        >
-          {/* Imagem do sinal */}
-          <View className="h-48 bg-gray-200 relative">
-            {item.imageUrl ? (
-              <Image 
-                source={{ uri: item.imageUrl }} 
-                className="w-full h-full"
-                resizeMode="contain"
-              />
-            ) : (
-              <View className="flex-1 items-center justify-center bg-gray-100">
-                <MaterialCommunityIcons 
-                  name="traffic-light" 
-                  size={48} 
-                  color={COLORS.textLight} 
-                />
-              </View>
-            )}
-            
-            {/* Categoria Badge */}
-            <View 
-              className="absolute top-2 left-2 px-3 py-1 rounded-full"
-              style={{ backgroundColor: categoryStyle.bg }}
-            >
-              <Text 
-                className="text-xs font-medium"
-                style={{ color: categoryStyle.text }}
-              >
-                {categories.find(c => c.id === item.category)?.name}
+        {/* Miniatura da imagem */}
+        <View className="w-12 h-12 rounded-lg mr-3 items-center justify-center" 
+          style={{ backgroundColor: COLORS.background }}>
+          {item.imageUrl ? (
+            <Image 
+              source={{ uri: item.imageUrl }} 
+              className="w-full h-full rounded-lg"
+            />
+          ) : (
+            <MaterialCommunityIcons 
+              name="traffic-light" 
+              size={20} 
+              color={COLORS.textLight} 
+            />
+          )}
+        </View>
+
+        {/* Conteúdo principal */}
+        <View className="flex-1">
+          <View className="flex-row items-center">
+            <Text className="flex-1 text-base font-semibold mr-2" numberOfLines={1}
+              style={{ color: COLORS.text }}>
+              {item.name}
+            </Text>
+            <View className="w-6 h-6 rounded-full items-center justify-center"
+              style={{ backgroundColor: categoryStyle.bg }}>
+              <Text className="text-xs font-bold" style={{ color: categoryStyle.text }}>
+                {categories.find(c => c.id === item.category)?.name.charAt(0)}
               </Text>
             </View>
           </View>
-
-          {/* Conteúdo */}
-          <View className="p-4">
-            <Text 
-              className="text-lg font-bold mb-2" 
-              style={{ color: COLORS.text }}
-              numberOfLines={1}
-            >
-              {item.name}
-            </Text>
-
-            <Text 
-              className="text-sm" 
-              style={{ color: COLORS.textLight }}
-              numberOfLines={3}
-            >
-              {item.description}
-            </Text>
-
-            {/* Ações */}
-            <View className="flex-row justify-end items-center border-t pt-3 mt-4"
-              style={{ borderTopColor: COLORS.border }}
-            >
-              <View className="flex-row gap-4">
-                <TouchableOpacity 
-                  className="flex-row items-center"
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    handleEdit(item);
-                  }}
-                >
-                  <Feather name="edit" size={18} color={COLORS.primary} />
-                  <Text 
-                    className="ml-1 text-sm"
-                    style={{ color: COLORS.primary }}
-                  >
-                    Editar
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                  className="flex-row items-center"
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    handleDelete(item.id);
-                  }}
-                >
-                  <AntDesign name="delete" size={18} color={COLORS.error} />
-                  <Text 
-                    className="ml-1 text-sm"
-                    style={{ color: COLORS.error }}
-                  >
-                    Excluir
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+          
+          <Text className="text-sm mt-1" numberOfLines={1}
+            style={{ color: COLORS.textLight }}>
+            {item.description}
+          </Text>
         </View>
+
+        {/* Ícone de ação */}
+        <Feather name="chevron-right" size={18} color={COLORS.textLight} />
       </TouchableOpacity>
     );
   };
@@ -248,60 +158,25 @@ const TrafficSignList = () => {
   }
 
   return (
-    <View 
-      className="flex-1"
-      style={{ backgroundColor: COLORS.background }}
-    >
+    <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
       {/* Header */}
-      <View className="mb-4 pt-4 pb-4 px-4 bg-white shadow-sm">
-        <View className="flex-row justify-between items-center mb-2">
-          <View className="flex-row items-center">
-            <TouchableOpacity 
-              onPress={() => router.back()} 
-              className="p-2 mr-2 rounded-full"
-              style={{ backgroundColor: COLORS.yellowLighten4 }}
-            >
-              <Feather name="arrow-left" size={20} color={COLORS.yellowDarken4} />
-            </TouchableOpacity>
-
-            <Text className="text-2xl font-bold" style={{ color: COLORS.text }}>
-              Sinais de Trânsito
-            </Text>
-          </View>
-
-          <View 
-            className="px-3 py-1 rounded-full" 
-            style={{ backgroundColor: COLORS.yellowLighten4 }}
-          >
-            <Text 
-              className="text-xs font-semibold" 
-              style={{ color: COLORS.yellowDarken4 }}
-            >
-              {filteredSigns.length} itens
-            </Text>
-          </View>
-        </View>
-
+      <View className="px-4 pt-4 pb-3 bg-white shadow-sm"
+        style={{ paddingTop: Platform.OS === 'ios' ? 50 : 16 }}>
+        <Text className="text-2xl font-bold mb-4" style={{ color: COLORS.text }}>
+          Sinais de Trânsito
+        </Text>
+        
         {/* Barra de pesquisa */}
-        <View className="relative mb-3">
+        <View className="flex-row items-center px-3 py-2 rounded-lg mb-3"
+          style={{ backgroundColor: COLORS.surface }}>
+          <Feather name="search" size={18} color={COLORS.textLight} />
           <TextInput
-            className="pl-10 pr-4 py-3 rounded-xl"
-            style={{
-              backgroundColor: COLORS.surface,
-              color: COLORS.text,
-              borderColor: COLORS.border,
-              borderWidth: 1
-            }}
+            className="flex-1 ml-2 text-base"
+            style={{ color: COLORS.text }}
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder="Pesquisar sinais..."
             placeholderTextColor={COLORS.textLight}
-          />
-          <Feather
-            name="search"
-            size={18}
-            color={COLORS.textLight}
-            style={{ position: 'absolute', left: 12, top: 14 }}
           />
         </View>
 
@@ -345,27 +220,22 @@ const TrafficSignList = () => {
         data={filteredSigns}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+        className="px-4 pt-3"
+        contentContainerStyle={{ paddingBottom: 24 }}
         ListEmptyComponent={
-          <View 
-            className="items-center justify-center py-12 px-4"
-            style={{ backgroundColor: COLORS.yellowLighten5, borderRadius: 12, marginHorizontal: 16 }}
-          >
+          <View className="items-center justify-center py-12 px-4 rounded-lg mx-4 mt-4"
+            style={{ backgroundColor: COLORS.yellowLighten5 }}>
             <MaterialCommunityIcons 
               name="traffic-light" 
               size={48} 
               color={COLORS.yellowDarken2} 
             />
-            <Text 
-              className="text-lg mt-4 text-center"
-              style={{ color: COLORS.textLight }}
-            >
+            <Text className="text-lg mt-4 text-center"
+              style={{ color: COLORS.textLight }}>
               Nenhum sinal encontrado
             </Text>
-            <Text 
-              className="text-sm mt-1 text-center max-w-xs"
-              style={{ color: COLORS.textLight }}
-            >
+            <Text className="text-sm mt-1 text-center"
+              style={{ color: COLORS.textLight }}>
               {searchQuery ? 'Tente ajustar sua busca' : 'Adicione novos sinais de trânsito'}
             </Text>
           </View>
@@ -385,27 +255,20 @@ const TrafficSignList = () => {
           shadowRadius: 4,
           elevation: 5,
         }}
-        onPress={handleAddNew}
-        disabled={isUploading}
+        onPress={() => router.push('/(signal)/create')}
       >
-        {isUploading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Feather name="plus" size={24} color="white" />
-        )}
+        <Feather name="plus" size={24} color="white" />
       </TouchableOpacity>
 
-      {/* Modal de visualização */}
+      {/* Modal de detalhes */}
       <Modal
         visible={modalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View 
-          className="flex-1 justify-center bg-black/90 p-4"
-          style={Platform.OS === 'ios' ? { paddingTop: 60 } : {}}
-        >
+        <View className="flex-1 justify-center bg-black/90 p-4"
+          style={Platform.OS === 'ios' ? { paddingTop: 60 } : {}}>
           <TouchableOpacity 
             className="absolute top-4 right-4 z-10 p-2"
             onPress={() => setModalVisible(false)}
@@ -414,18 +277,17 @@ const TrafficSignList = () => {
           </TouchableOpacity>
 
           {selectedSign && (
-            <ScrollView 
-              contentContainerStyle={{ paddingBottom: 40 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <View className="bg-white rounded-2xl p-6">
+            <View className="bg-white rounded-2xl max-h-[80%]">
+              <ScrollView 
+                contentContainerStyle={{ paddingBottom: 20 }}
+                showsVerticalScrollIndicator={false}
+              >
                 {/* Imagem em destaque */}
-                <View className="h-64 bg-gray-100 rounded-xl mb-4 items-center justify-center">
+                <View className="h-48 bg-gray-100 rounded-t-2xl items-center justify-center">
                   {selectedSign.imageUrl ? (
                     <Image 
                       source={{ uri: selectedSign.imageUrl }} 
-                      className="w-full h-full"
-                      resizeMode="contain"
+                      className="w-full h-full rounded-t-2xl"
                     />
                   ) : (
                     <MaterialCommunityIcons 
@@ -436,77 +298,103 @@ const TrafficSignList = () => {
                   )}
                 </View>
 
-                {/* Categoria */}
-                <View className="flex-row items-center mb-2">
-                  <View 
-                    className="px-3 py-1 rounded-full mr-3"
-                    style={{ 
-                      backgroundColor: getCategoryStyle(selectedSign.category).bg 
-                    }}
-                  >
-                    <Text 
-                      className="text-xs font-medium"
-                      style={{ color: getCategoryStyle(selectedSign.category).text }}
+                {/* Detalhes */}
+                <View className="p-5">
+                  <View className="flex-row mb-3">
+                    <View 
+                      className="px-3 py-1 rounded-full"
+                      style={{ backgroundColor: getCategoryStyle(selectedSign.category).bg }}
                     >
-                      {categories.find(c => c.id === selectedSign.category)?.name}
-                    </Text>
+                      <Text className="text-xs font-semibold text-white">
+                        {categories.find(c => c.id === selectedSign.category)?.name}
+                      </Text>
+                    </View>
                   </View>
+
+                  <Text className="text-2xl font-bold mb-3" style={{ color: COLORS.text }}>
+                    {selectedSign.name}
+                  </Text>
+                  <Text className="text-base mb-5" style={{ color: COLORS.text }}>
+                    {selectedSign.description}
+                  </Text>
+
+                  {selectedSign.meaning && (
+                    <>
+                      <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text }}>
+                        Significado:
+                      </Text>
+                      <Text className="text-base mb-4" style={{ color: COLORS.text }}>
+                        {selectedSign.meaning}
+                      </Text>
+                    </>
+                  )}
+
+                  {selectedSign.rules.length > 0 && (
+                    <>
+                      <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text }}>
+                        Regras Relacionadas:
+                      </Text>
+                      {selectedSign.rules.map((rule, index) => (
+                        <View key={`rule-${index}`} className="flex-row mb-2">
+                          <View className="w-2 h-2 rounded-full mt-2 mr-2" 
+                            style={{ backgroundColor: COLORS.text }} />
+                          <Text className="text-base flex-1" style={{ color: COLORS.text }}>
+                            {rule}
+                          </Text>
+                        </View>
+                      ))}
+                    </>
+                  )}
+
+                  {selectedSign.commonMistakes.length > 0 && (
+                    <>
+                      <Text className="text-lg font-semibold mt-4 mb-2" style={{ color: COLORS.text }}>
+                        Erros Comuns:
+                      </Text>
+                      {selectedSign.commonMistakes.map((mistake, index) => (
+                        <View key={`mistake-${index}`} className="flex-row mb-2">
+                          <View className="w-2 h-2 rounded-full mt-2 mr-2" 
+                            style={{ backgroundColor: COLORS.text }} />
+                          <Text className="text-base flex-1" style={{ color: COLORS.text }}>
+                            {mistake}
+                          </Text>
+                        </View>
+                      ))}
+                    </>
+                  )}
                 </View>
+              </ScrollView>
 
-                {/* Nome */}
-                <Text 
-                  className="text-2xl font-bold mb-3" 
-                  style={{ color: COLORS.text }}
+              {/* Ações */}
+              <View className="flex-row justify-between border-t p-4"
+                style={{ borderTopColor: COLORS.border }}>
+                <TouchableOpacity 
+                  className="flex-row items-center px-5 py-2"
+                  onPress={() => {
+                    setModalVisible(false);
+                    router.push({ pathname: '/(signal)/update-signal', params: { id: selectedSign.id } });
+                  }}
                 >
-                  {selectedSign.name}
-                </Text>
+                  <Feather name="edit" size={18} color={COLORS.primary} />
+                  <Text className="ml-2 text-base font-medium" style={{ color: COLORS.primary }}>
+                    Editar
+                  </Text>
+                </TouchableOpacity>
 
-                {/* Descrição */}
-                <Text 
-                  className="text-base mb-6" 
-                  style={{ color: COLORS.text }}
+                <TouchableOpacity 
+                  className="flex-row items-center px-5 py-2"
+                  onPress={() => {
+                    setModalVisible(false);
+                    handleDelete(selectedSign.id);
+                  }}
                 >
-                  {selectedSign.description}
-                </Text>
-
-                {/* Ações */}
-                <View className="flex-row justify-between border-t pt-4"
-                  style={{ borderTopColor: COLORS.border }}
-                >
-                  <TouchableOpacity 
-                    className="flex-row items-center"
-                    onPress={() => {
-                      setModalVisible(false);
-                      handleEdit(selectedSign);
-                    }}
-                  >
-                    <Feather name="edit" size={18} color={COLORS.primary} />
-                    <Text 
-                      className="ml-2 text-sm"
-                      style={{ color: COLORS.primary }}
-                    >
-                      Editar
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity 
-                    className="flex-row items-center"
-                    onPress={() => {
-                      setModalVisible(false);
-                      handleDelete(selectedSign.id);
-                    }}
-                  >
-                    <AntDesign name="delete" size={18} color={COLORS.error} />
-                    <Text 
-                      className="ml-2 text-sm"
-                      style={{ color: COLORS.error }}
-                    >
-                      Excluir
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                  <AntDesign name="delete" size={18} color={COLORS.error} />
+                  <Text className="ml-2 text-base font-medium" style={{ color: COLORS.error }}>
+                    Excluir
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
+            </View>
           )}
         </View>
       </Modal>

@@ -1,6 +1,7 @@
-import React from 'react';
-import { TextInput, View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { TextInput, View, Text, Pressable } from 'react-native';
 import { Controller, Control, FieldError } from 'react-hook-form';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type InputProps = {
   control: Control<any>;
@@ -17,25 +18,56 @@ export const Input: React.FC<InputProps> = ({
   error,
   secureTextEntry = false,
 }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(!secureTextEntry);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(prev => !prev);
+  };
+
   return (
-    <View className='mb-4'>
+    <View style={{ marginBottom: 16, position: 'relative' }}>
       <Controller
         control={control}
+        name={name}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-          className={`border rounded-lg px-4 py-3 ${error ? 'border-red-500' : 'border-gray-300'}`}
             placeholder={placeholder}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            secureTextEntry={secureTextEntry}
+            secureTextEntry={secureTextEntry && !isPasswordVisible}
             autoCapitalize="none"
+            style={{
+              borderWidth: 1,
+              borderColor: error ? 'red' : '#ccc',
+              borderRadius: 8,
+              paddingHorizontal: 40,
+              paddingVertical: 12,
+            }}
           />
         )}
-        name={name}
       />
+
+      {secureTextEntry && (
+        <Pressable
+          onPress={togglePasswordVisibility}
+          style={{
+            position: 'absolute',
+            right: 12,
+            top: 12,
+            padding: 4,
+          }}
+        >
+          <MaterialCommunityIcons
+            name={isPasswordVisible ? 'eye-off' : 'eye'}
+            size={24}
+            color="#888"
+          />
+        </Pressable>
+      )}
+
       {error && (
-        <Text className='text-red-500 text-xs mt-1'>
+        <Text style={{ color: 'red', fontSize: 12, marginTop: 4 }}>
           {error.message}
         </Text>
       )}

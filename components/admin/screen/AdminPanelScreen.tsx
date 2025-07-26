@@ -26,7 +26,7 @@ const AdminDashboard = () => {
     {
       label: 'Usuários',
       icon: 'users',
-      path: '/admin/users',
+      path: '/(users)/userlist',
       bgColor: COLORS.primary,
     },
     {

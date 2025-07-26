@@ -57,18 +57,15 @@ export default function Login() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-        backgroundColor: COLORS.background,
-        justifyContent: 'center',
-        padding: 24,
-      }}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: COLORS.background }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1 justify-center"
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 48 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <Animated.View
           style={{
@@ -137,12 +134,13 @@ export default function Login() {
           />
 
           {/* Forgot Password */}
+          <Link asChild href="/(auth)/recovery">
           <TouchableOpacity className="items-end mb-4">
             <Text style={{ color: COLORS.primary, fontWeight: '500' }}>
               Esqueceu sua senha?
             </Text>
           </TouchableOpacity>
-
+</Link>
           {/* Submit Button */}
           <TouchableOpacity
             activeOpacity={0.8}
@@ -167,7 +165,8 @@ export default function Login() {
             </Link>
           </View>
         </Animated.View>
-      </KeyboardAvoidingView>
+      
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

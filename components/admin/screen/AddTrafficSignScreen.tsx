@@ -44,8 +44,8 @@ const AddTrafficSignScreen = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [localImage, setLocalImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -70,22 +70,34 @@ const AddTrafficSignScreen = () => {
   };
 
   const uploadImageToFirebase = async (uri: string) => {
-    try {
-      if (!uri) throw new Error('Imagem inválida ou não selecionada.');
+    if (!uri) {
+      Alert.alert('Erro', 'Imagem inválida ou não selecionada.');
+      return;
+    }
 
-      setIsUploading(true);
+    setIsUploading(true);
+    try {
+      // converter URI em blob (fetch funciona no Expo)
       const response = await fetch(uri);
       const blob = await response.blob();
+
       const timestamp = Date.now();
+      const storage = getStorage();
       const storageRef = ref(storage, `traffic-signs/sign_${timestamp}.jpg`);
 
-      await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
+      // realizar upload
+      const snapshot = await uploadBytes(storageRef, blob);
+      console.log('Upload concluído:', snapshot);
+
+      // obter URL de download
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('Download URL:', downloadURL);
 
       setFormData(prev => ({
         ...prev,
         imageUrl: downloadURL
       }));
+
     } catch (error: any) {
       console.error('Erro no upload:', error);
       Alert.alert('Erro no upload', error.message || 'Falha ao enviar a imagem para o Firebase');
@@ -94,6 +106,7 @@ const AddTrafficSignScreen = () => {
       setIsUploading(false);
     }
   };
+
 
   const addListItem = (field: 'rules' | 'commonMistakes') => {
     setFormData({
@@ -178,12 +191,16 @@ const AddTrafficSignScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1"
-      style={{ backgroundColor: COLORS.background }}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-    >
+       <KeyboardAvoidingView
+         style={{ flex: 1, backgroundColor: COLORS.background }}
+         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+         keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+       >
+         <ScrollView
+           contentContainerStyle={{ flexGrow: 1 }}
+           keyboardShouldPersistTaps="handled"
+           showsVerticalScrollIndicator={false}
+         >
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 pt-12 pb-4 border-b" 
         style={{ 
@@ -471,6 +488,7 @@ const AddTrafficSignScreen = () => {
           )}
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
