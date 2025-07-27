@@ -46,7 +46,7 @@ export const deleteQuizTest = async (id: string) => {
 };
 
 // Quiz Question
-export const fetchQuizQuestionsByTest = async (quizTestId: number): Promise<QuizQuestion[]> => {
+export const fetchQuizQuestionsByTest = async (quizTestId: string): Promise<QuizQuestion[]> => {
   const q = query(collection(db, questionCollection), where('quizTestId', '==', quizTestId));
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as QuizQuestion[];

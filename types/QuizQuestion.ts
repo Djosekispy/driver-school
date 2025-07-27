@@ -5,5 +5,5 @@ export interface QuizQuestion {
   correctAnswerIndex: number; 
   explanation?: string; 
   category?: string; 
-  quizTestId : number
+  quizTestId : string
 }

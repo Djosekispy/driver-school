@@ -26,7 +26,8 @@ const QuestionManagerScreen = () => {
     quizQuestions,
     createQuestion,
     updateQuestion,
-    deleteQuestion
+    deleteQuestion,
+    loadQuizQuestionsByTestId
   } = useFirebase();
   
   const router = useRouter();
@@ -40,13 +41,13 @@ const QuestionManagerScreen = () => {
     correctAnswerIndex: 0,
     explanation: '',
     category: '',
-    quizTestId: Number(testId),
+    quizTestId: testId as string,
   });
-
+  //console.log(JSON.stringify(quizQuestions));
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      
+      loadQuizQuestionsByTestId(testId as string);
       const currentTest = quizTests.find(t => t.id === testId);
       if (currentTest) {
         setTest(currentTest);
@@ -107,7 +108,7 @@ const QuestionManagerScreen = () => {
         correctAnswerIndex: 0,
         explanation: '',
         category: test?.category || '',
-        quizTestId: Number(testId),
+        quizTestId: testId as string,
       });
     } catch (error) {
       console.error('Erro ao salvar pergunta:', error);
@@ -115,7 +116,7 @@ const QuestionManagerScreen = () => {
     }
   };
 
-  const filteredQuestions = quizQuestions.filter(q => q.quizTestId === Number(testId));
+  const filteredQuestions = quizQuestions.filter(q => q.quizTestId === testId);
 
   const renderItem = ({ item }: { item: QuizQuestion }) => {
     return (
@@ -241,7 +242,7 @@ const QuestionManagerScreen = () => {
             correctAnswerIndex: 0,
             explanation: '',
             category: test.category,
-            quizTestId: Number(testId),
+            quizTestId: testId as string,
           });
           setModalVisible(true);
         }}

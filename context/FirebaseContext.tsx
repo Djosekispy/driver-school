@@ -29,7 +29,7 @@ deleteLog: (id: string) => Promise<void>;
 getLogById: (id: string) => Promise<Logs | null>;
   // Carregamento de dados
   loadInitialData: () => Promise<void>;
-  loadQuizQuestionsByTestId: (quizTestId: number) => Promise<void>;
+  loadQuizQuestionsByTestId: (quizTestId: string) => Promise<void>;
   loadUserResults: (userId: string) => Promise<void>;
   loadTrafficSigns: () => Promise<void>;
   loadVideoLessons: () => Promise<void>;
@@ -109,7 +109,7 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setUsers(userList);
   };
 
-  const loadQuizQuestionsByTestId = async (quizTestId: number) => {
+  const loadQuizQuestionsByTestId = async (quizTestId: string) => {
     const questions = await fetchQuizQuestionsByTest(quizTestId);
     setQuizQuestions(questions);
   };

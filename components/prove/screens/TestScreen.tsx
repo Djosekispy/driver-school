@@ -23,13 +23,14 @@ const TestListScreen = () => {
     quizTests, 
     quizQuestions,
     deleteTest,
+    loadInitialData
   } = useFirebase();
   const router = useRouter();
   const [selectedTest, setSelectedTest] = useState<QuizTest | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('todos');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
 
 
@@ -144,12 +145,22 @@ const TestListScreen = () => {
   return (
     <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
       {/* Header */}
-      <View className="px-4 pt-4 pb-3 bg-white shadow-sm"
-        style={{ paddingTop: Platform.OS === 'ios' ? 50 : 16 }}>
-        <Text className="text-2xl font-bold mb-4" style={{ color: COLORS.text }}>
+        <View className="flex-row bg-white pt-2 items-center px-2 mb-2">
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            className="p-2 mr-4"
+          >
+            <AntDesign name="arrowleft" size={24} color={COLORS.text} />
+          </TouchableOpacity>
+           <Text className="text-2xl font-bold mb-4" style={{ color: COLORS.text }}>
           Gerenciamento de Testes
         </Text>
+        </View>
+      <View className="px-4 pt-4 pb-3  shadow-sm"
+        style={{ paddingTop: Platform.OS === 'ios' ? 50 : 16 }}>
         
+     
+
         {/* Barra de pesquisa */}
         <View className="flex-row items-center px-3 py-2 rounded-lg mb-3"
           style={{ backgroundColor: COLORS.surface }}>
