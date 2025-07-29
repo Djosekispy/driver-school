@@ -5,6 +5,7 @@ export interface QuizResult {
   score: number;
   totalQuestions: number;
   correctAnswers: number;
+  quizTestId: string;
   wrongAnswers: number;
   answers: {
     questionId: string;

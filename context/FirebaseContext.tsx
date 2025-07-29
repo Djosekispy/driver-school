@@ -1,5 +1,5 @@
 import { fetchLogs } from '@/services/logService';
-import { createQuizQuestion, createQuizTest, deleteQuizQuestion, deleteQuizTest, fetchQuizQuestionsByTest, fetchQuizTests, fetchResultsByUser, submitQuizResult, updateQuizQuestion, updateQuizTest } from '@/services/quizService';
+import { createQuizQuestion, createQuizTest, deleteQuizQuestion, deleteQuizTest, fetchQuizQuestions, fetchQuizQuestionsByTest, fetchQuizTests, fetchResultsByUser, submitQuizResult, updateQuizQuestion, updateQuizTest } from '@/services/quizService';
 import { createTrafficSign, deleteTrafficSign, fetchTrafficSigns, getTrafficSignById, updateTrafficSign } from '@/services/trafficSignService';
 import { createUser, deleteUser, fetchUsers, findUserByEmail, getUserById, updateUser } from '@/services/userService';
 import { createVideoLesson, deleteVideoLesson,fetchVideoLessonsByCategory, fetchVideoLessons, getVideoLesson, updateVideoLesson } from '@/services/videoLessonService';
@@ -37,6 +37,7 @@ updateLog: (id: string, data: Partial<Omit<Logs, 'id' | 'createdAt'>>) => Promis
 deleteLog: (id: string) => Promise<void>;
 getLogById: (id: string) => Promise<Logs | null>;
  watchedLessons: WatchedLesson[];
+ loadQuiz : () => Promise<void>;
   markLessonAsWatched: (data: Omit<WatchedLesson, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateWatchedLesson: (id: string, data: Partial<WatchedLesson>) => Promise<void>;
   loadWatchedLessonsByUser: (userId: string) => Promise<void>;
@@ -131,6 +132,11 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const questions = await fetchQuizQuestionsByTest(quizTestId);
     setQuizQuestions(questions);
   };
+
+  const loadQuiz = async () => {
+  const questions = await fetchQuizQuestions();
+  setQuizQuestions(questions);
+  }
 
   const loadUserResults = async (userId: string) => {
     const results = await fetchResultsByUser(userId);
@@ -310,7 +316,7 @@ const getLogById = async (id: string): Promise<Logs | null> => {
         loadTrafficSigns,
         loadVideoLessons,
         loadUsers,
-        
+        loadQuiz,
         submitResult,
         createTest,
         updateTest,

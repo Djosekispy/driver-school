@@ -1,4 +1,3 @@
-// statsService.ts
 import { db } from '@/firebase/firebase';
 import { QuizQuestion } from '@/types/QuizQuestion';
 import { QuizResult } from '@/types/QuizResult';
@@ -118,7 +117,7 @@ const getUserStats = async (userId: string): Promise<UserStats> => {
       score: scorePercentage
     });
   });
-
+ 
   // Calcular médias e determinar melhores/piores categorias
   stats.overall.averageScore = stats.overall.totalTestsTaken > 0 
     ? (stats.overall.correctAnswers / stats.overall.totalQuestionsAnswered) * 100 

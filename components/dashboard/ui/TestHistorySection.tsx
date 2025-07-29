@@ -1,130 +1,300 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '@/hooks/useColors';
+import { getUserStats, UserStats } from '@/services/statsService';
+import { useFirebase } from '@/context/FirebaseContext';
 import { auth } from '@/firebase/firebase';
-import { useNavigation } from '@react-navigation/native';
-import { getUserStats } from '@/services/statsService';
 
-const TestHistoryItem: React.FC<{ test: any }> = ({ test }) => {
-  const passed = test.score >= test.pointToAprove;
-  const scorePercentage = Math.round((test.correctAnswers / test.totalQuestions) * 100);
+const UserStatsDashboard = () => {
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  return (
-    <View className="mr-3 p-4 rounded-xl w-44" style={{ backgroundColor: COLORS.surface }}>
-      <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-xs" style={{ color: COLORS.textLight }}>
-          {new Date(test.quizDate?.seconds * 1000 || test.quizDate).toLocaleDateString('pt-BR')}
-        </Text>
-        {passed ? (
-          <Feather name="check-circle" size={16} style={{ color: COLORS.success }} />
-        ) : (
-          <Feather name="x-circle" size={16} style={{ color: COLORS.error }} />
-        )}
-      </View>
-      
-      <Text 
-        className="text-lg font-bold mb-1" 
-        style={{ color: passed ? COLORS.success : COLORS.error }}
-      >
-        {scorePercentage}%
-      </Text>
-      
-      <Text className="text-sm font-medium" style={{ color: COLORS.text }}>
-        {test.testTitle}
-      </Text>
-      
-      <Text className="text-xs mt-1" style={{ color: COLORS.textLight }}>
-        {passed ? 'Aprovado' : 'Reprovado'} • {test.category}
-      </Text>
-      
-      <Text className="text-xs mt-1" style={{ color: COLORS.textLight }}>
-        {test.correctAnswers}/{test.totalQuestions} acertos
-      </Text>
-      
-      <View className="mt-2 h-1 w-full rounded-full" style={{ backgroundColor: COLORS.surface }}>
-        <View 
-          className="h-1 rounded-full" 
-          style={{ 
-            width: `${scorePercentage}%`,
-            backgroundColor: passed ? COLORS.success : COLORS.error
-          }} 
-        />
-      </View>
-    </View>
-  );
-};
-
-const TestHistorySection: React.FC = () => {
-  const [recentTests, setRecentTests] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const navigation = useNavigation();
-
-  React.useEffect(() => {
-    const loadRecentTests = async () => {
+  useEffect(() => {
+    const loadStats = async () => {
       if (auth.currentUser?.uid) {
         try {
-          const stats = await getUserStats(auth.currentUser.uid);
-          setRecentTests(stats.recentActivity.slice(0, 5)); // Mostrar apenas os 5 mais recentes
+          const userStats = await getUserStats(auth.currentUser.uid);
+          setStats(userStats);
         } catch (error) {
-          console.error('Error loading test history:', error);
+          console.error('Error loading user stats:', error);
         } finally {
           setLoading(false);
         }
       }
     };
 
-    loadRecentTests();
+    loadStats();
   }, []);
-
+console.log('stats', stats);
   if (loading) {
     return (
-      <View className="mb-6">
-        <Text className="text-lg font-semibold mb-3" style={{ color: COLORS.text }}>
-          Histórico de Testes
-        </Text>
-        <ActivityIndicator color={COLORS.primary} />
+      <View className="flex-1 items-center justify-center bg-gray-50">
+        <Text className="text-lg" style={{ color: COLORS.text }}>Carregando estatísticas...</Text>
       </View>
     );
   }
 
-  if (recentTests.length === 0) {
+  if (!stats) {
     return (
-      <View className="mb-6">
-        <Text className="text-lg font-semibold mb-3" style={{ color: COLORS.text }}>
-          Histórico de Testes
-        </Text>
-        <Text className="text-sm" style={{ color: COLORS.textLight }}>
-          Nenhum teste realizado ainda
-        </Text>
+      <View className="flex-1 items-center justify-center bg-gray-50">
+        <Feather name="alert-circle" size={32} style={{ color: COLORS.error }} />
+        <Text className="text-lg mt-4" style={{ color: COLORS.text }}>Não foi possível carregar as estatísticas</Text>
       </View>
     );
   }
+
+  // Função auxiliar para renderizar barra de progresso
+  const renderProgressBar = (percentage: number, color: string) => (
+    <View className="h-2 bg-gray-200 rounded-full w-full overflow-hidden">
+      <View 
+        className="h-full rounded-full" 
+        style={{ 
+          width: `${percentage}%`,
+          backgroundColor: color
+        }}
+      />
+    </View>
+  );
 
   return (
-    <View className="mb-6">
-      <View className="flex-row justify-between items-center mb-3">
-        <Text className="text-lg font-semibold" style={{ color: COLORS.text }}>
-          Histórico de Testes
-        </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('TestHistory')}>
-          <Text className="text-sm" style={{ color: COLORS.primary }}>
-            Ver todos
+    <View className="flex-1 bg-gray-50">
+      {/* Header */}
+
+
+      {/* Tabs */}
+      <View className="flex-row border-b border-gray-200 bg-white">
+        <TouchableOpacity
+          className={`flex-1 py-3 items-center ${activeTab === 'overview' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: activeTab === 'overview' ? COLORS.primary : 'transparent' }}
+          onPress={() => setActiveTab('overview')}
+        >
+          <Text 
+            className={`font-medium ${activeTab === 'overview' ? 'text-primary' : 'text-gray-500'}`}
+            style={activeTab === 'overview' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+          >
+            Visão Geral
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className={`flex-1 py-3 items-center ${activeTab === 'categories' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: activeTab === 'categories' ? COLORS.primary : 'transparent' }}
+          onPress={() => setActiveTab('categories')}
+        >
+          <Text 
+            className={`font-medium ${activeTab === 'categories' ? 'text-primary' : 'text-gray-500'}`}
+            style={activeTab === 'categories' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+          >
+            Por Categoria
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className={`flex-1 py-3 items-center ${activeTab === 'history' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: activeTab === 'history' ? COLORS.primary : 'transparent' }}
+          onPress={() => setActiveTab('history')}
+        >
+          <Text 
+            className={`font-medium ${activeTab === 'history' ? 'text-primary' : 'text-gray-500'}`}
+            style={activeTab === 'history' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+          >
+            Histórico
           </Text>
         </TouchableOpacity>
       </View>
-      
-      <FlatList
-        horizontal
-        data={recentTests}
-        keyExtractor={(item, index) => `${item.date}-${index}`}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => <TestHistoryItem test={item} />}
-        contentContainerStyle={{ paddingRight: 16 }}
-        ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
-      />
+
+      {/* Content */}
+      <ScrollView className="flex-1 p-4">
+        {activeTab === 'overview' && (
+          <View>
+            {/* Overall Stats Card */}
+            <View className="bg-white rounded-xl shadow-sm p-5 mb-4">
+              <Text className="text-lg font-semibold mb-4" style={{ color: COLORS.text }}>
+                Desempenho Geral
+              </Text>
+              
+            <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  className="mb-6"
+  contentContainerStyle={{ flexDirection: 'row', gap: 16, paddingHorizontal: 16 }}
+>
+  <View className="items-center">
+    <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
+      {stats.overall.totalTestsTaken}
+    </Text>
+    <Text className="text-sm" style={{ color: COLORS.textLight }}>
+      Testes Realizados
+    </Text>
+  </View>
+
+  <View className="items-center">
+    <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
+      {stats.overall.averageScore.toFixed(1)}%
+    </Text>
+    <Text className="text-sm" style={{ color: COLORS.textLight }}>
+      Média de Acertos
+    </Text>
+  </View>
+
+  <View className="items-center">
+    <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
+      {stats.overall.correctAnswers}
+    </Text>
+    <Text className="text-sm" style={{ color: COLORS.textLight }}>
+      Questões Corretas
+    </Text>
+  </View>
+</ScrollView>
+
+
+              <View className="mb-4">
+                <View className="flex-row justify-between mb-1">
+                  <Text className="text-sm" style={{ color: COLORS.text }}>Melhor Categoria</Text>
+                  <Text className="text-sm font-semibold" style={{ color: COLORS.primary }}>
+                    {stats.overall.bestCategory}
+                  </Text>
+                </View>
+                {renderProgressBar(
+                  stats.byCategory[stats.overall.bestCategory]?.averageScore || 0,
+                  COLORS.success
+                )}
+              </View>
+
+              <View>
+                <View className="flex-row justify-between mb-1">
+                  <Text className="text-sm" style={{ color: COLORS.text }}>Categoria a Melhorar</Text>
+                  <Text className="text-sm font-semibold" style={{ color: COLORS.error }}>
+                    {stats.overall.worstCategory}
+                  </Text>
+                </View>
+                {renderProgressBar(
+                  stats.byCategory[stats.overall.worstCategory]?.averageScore || 0,
+                  COLORS.error
+                )}
+              </View>
+            </View>
+
+            {/* Progress Chart */}
+            <View className="bg-white rounded-xl shadow-sm p-5 mb-4">
+              <Text className="text-lg font-semibold mb-4" style={{ color: COLORS.text }}>
+                Progresso Recente
+              </Text>
+              
+              <View className="flex-row h-40 items-end space-x-2">
+                {stats.progressOverTime.map((item, index) => (
+                  <View key={index} className="flex-1 items-center">
+                    <View 
+                      className="w-full rounded-t-sm" 
+                      style={{ 
+                        height: `${item.score}%`,
+                        backgroundColor: item.score >= 70 ? COLORS.success : item.score >= 50 ? COLORS.warning : COLORS.error
+                      }}
+                    />
+                    <Text className="text-xs mt-1" style={{ color: COLORS.textLight }}>
+                      {index === stats.progressOverTime.length - 1 ? 'Hoje' : ''}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </View>
+        )}
+
+        {activeTab === 'categories' && (
+          <View>
+            {Object.entries(stats.byCategory).map(([category, data]) => (
+              <View key={category} className="bg-white rounded-xl shadow-sm p-5 mb-4">
+                <View className="flex-row justify-between items-center mb-3">
+                  <Text className="text-lg font-semibold" style={{ color: COLORS.text }}>
+                    {category}
+                  </Text>
+                  <View className="px-3 py-1 rounded-full" style={{ backgroundColor: COLORS.yellowLighten5 }}>
+                    <Text className="text-sm font-medium" style={{ color: COLORS.primary }}>
+                      {data.averageScore.toFixed(1)}%
+                    </Text>
+                  </View>
+                </View>
+
+                <View className="flex-row justify-between mb-4">
+                  <View>
+                    <Text className="text-sm" style={{ color: COLORS.textLight }}>Testes Realizados</Text>
+                    <Text className="text-xl font-bold" style={{ color: COLORS.text }}>
+                      {data.testsTaken}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text className="text-sm" style={{ color: COLORS.textLight }}>Questões Corretas</Text>
+                    <Text className="text-xl font-bold" style={{ color: COLORS.text }}>
+                      {data.correctAnswers}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text className="text-sm" style={{ color: COLORS.textLight }}>Taxa de Acerto</Text>
+                    <Text className="text-xl font-bold" style={{ color: COLORS.text }}>
+                      {data.averageScore.toFixed(1)}%
+                    </Text>
+                  </View>
+                </View>
+
+                {data.bestTest.testTitle && (
+                  <View className="border-t border-gray-100 pt-3">
+                    <Text className="text-sm mb-1" style={{ color: COLORS.textLight }}>Melhor Teste</Text>
+                    <View className="flex-row justify-between items-center">
+                      <Text className="font-medium" style={{ color: COLORS.text }}>
+                        {data.bestTest.testTitle}
+                      </Text>
+                      <Text className="font-bold" style={{ color: COLORS.success }}>
+                        {data.bestTest.score.toFixed(1)}%
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'history' && (
+          <View>
+            <Text className="text-lg font-semibold mb-3 px-2" style={{ color: COLORS.text }}>
+              Atividade Recente
+            </Text>
+            
+            {stats.recentActivity.map((activity, index) => (
+              <View 
+                key={index} 
+                className="bg-white rounded-xl shadow-sm p-4 mb-3 flex-row justify-between items-center"
+              >
+                <View className="flex-1">
+                  <Text className="font-medium" style={{ color: COLORS.text }}>
+                    {activity.testTitle}
+                  </Text>
+                  <Text className="text-sm" style={{ color: COLORS.textLight }}>
+                    {activity.date.toLocaleDateString('pt-BR')}
+                  </Text>
+                </View>
+                
+                <View className="items-end">
+                  <Text 
+                    className={`text-lg font-bold ${
+                      activity.score >= 70 ? 'text-green-500' : 
+                      activity.score >= 50 ? 'text-yellow-500' : 'text-red-500'
+                    }`}
+                  >
+                    {activity.score.toFixed(1)}%
+                  </Text>
+                  <Text className="text-xs" style={{ color: COLORS.textLight }}>
+                    {activity.score >= 70 ? 'Excelente' : activity.score >= 50 ? 'Bom' : 'Precisa melhorar'}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
 
-export default TestHistorySection;
+export default UserStatsDashboard;

@@ -132,9 +132,6 @@ const ThemesSection: React.FC = () => {
   if (loading) {
     return (
       <View className="mb-6">
-        <Text className="text-lg font-semibold mb-3" style={{ color: COLORS.text }}>
-          Temas para Estudo
-        </Text>
         <ActivityIndicator color={COLORS.primary} />
       </View>
     );

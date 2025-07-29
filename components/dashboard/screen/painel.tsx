@@ -18,6 +18,7 @@ import { COLORS } from '@/hooks/useColors';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import UserStatsDashboard from '../ui/TestHistorySection';
 
 const HomeScreen = () => {
   const router = useRouter()
@@ -36,7 +37,7 @@ const HomeScreen = () => {
       )}
       <ScrollView className="flex-1 px-4 pt-4">
         <ProgressCard />
-        <TestHistorySection />
+        <UserStatsDashboard />
         <ThemesSection  />
         <DailyTipCard tip={mockDailyTip} />
         <FeaturedVideoCard video={mockFeaturedVideo} />

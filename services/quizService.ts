@@ -52,6 +52,12 @@ export const fetchQuizQuestionsByTest = async (quizTestId: string): Promise<Quiz
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as QuizQuestion[];
 };
 
+export const fetchQuizQuestions = async (): Promise<QuizQuestion[]> => {
+  const q = query(collection(db, questionCollection));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as QuizQuestion[];
+};
+
 export const createQuizQuestion = async (data: Omit<QuizQuestion, 'id'>) => {
   await addDoc(collection(db, questionCollection), data);
    await createLog({createdBy : '001', title : `Nova questão adicionada`, discription : String(data.category) , type:'test'});
