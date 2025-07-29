@@ -98,11 +98,10 @@ export const mockDailyTip: DailyTip = {
 
 // mocks/video.mock.ts
 export const mockFeaturedVideo: FeaturedVideo = {
-  id: 'video-001',
-  title: 'Como interpretar placas de regulamentação',
-  duration: '5:32',
-  thumbnail: 'https://i.ytimg.com/vi/example/mqdefault.jpg',
-  views: 1245,
-  uploadDate: new Date('2023-05-15'),
-  instructor: 'Mariana Oliveira',
+   videoUrl: 'https://www.youtube.com/watch?v=YeYU67u0Gz4',
+  thumbnail: 'https://i.ytimg.com/vi/YeYU67u0Gz4/hqdefault.jpg',
+  title: 'Conhecendo seu carro',
+  duration: 4,
+  views: '340.000',
+  instructor: 'Com animação',
 };

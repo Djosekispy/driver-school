@@ -1,5 +1,5 @@
 import { db } from '@/firebase/firebase';
-import { VideoLesson } from '@/types/VideoLesson';
+import { VideoLesson, VideoLessonCategory } from '@/types/VideoLesson';
 import {
   collection,
   getDocs,
@@ -9,6 +9,8 @@ import {
   updateDoc,
   getDoc,
   Timestamp,
+  query,
+  where,
 } from 'firebase/firestore';
 import { createLog } from './logService';
 
@@ -65,4 +67,25 @@ export const getVideoLesson = async (id: string): Promise<VideoLesson | null> =>
     createdAt: data.createdAt?.toDate?.() ?? new Date(),
     updatedAt: data.updatedAt?.toDate?.() ?? new Date(),
   } as VideoLesson;
+};
+
+export const fetchVideoLessonsByCategory = async (
+  category: VideoLessonCategory
+): Promise<VideoLesson[]> => {
+  const q = query(
+    collection(db, 'videoLessons'),
+    where('category', '==', category)
+  );
+  
+  const snapshot = await getDocs(q);
+  
+  return snapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate?.() ?? new Date(),
+      updatedAt: data.updatedAt?.toDate?.() ?? new Date(),
+    } as VideoLesson;
+  });
 };

@@ -2,14 +2,23 @@ import { fetchLogs } from '@/services/logService';
 import { createQuizQuestion, createQuizTest, deleteQuizQuestion, deleteQuizTest, fetchQuizQuestionsByTest, fetchQuizTests, fetchResultsByUser, submitQuizResult, updateQuizQuestion, updateQuizTest } from '@/services/quizService';
 import { createTrafficSign, deleteTrafficSign, fetchTrafficSigns, getTrafficSignById, updateTrafficSign } from '@/services/trafficSignService';
 import { createUser, deleteUser, fetchUsers, findUserByEmail, getUserById, updateUser } from '@/services/userService';
-import { createVideoLesson, deleteVideoLesson, fetchVideoLessons, getVideoLesson, updateVideoLesson } from '@/services/videoLessonService';
+import { createVideoLesson, deleteVideoLesson,fetchVideoLessonsByCategory, fetchVideoLessons, getVideoLesson, updateVideoLesson } from '@/services/videoLessonService';
+import {
+  createWatchedLesson,
+  deleteWatchedLesson,
+  fetchWatchedLessonsByUser,
+  fetchUnwatchedLessonsByCategory,
+  getWatchedLessonByUserAndVideo,
+  updateWatchedLesson,
+} from '@/services/watcheLessonService';
 import { Logs } from '@/types/logs';
 import { QuizQuestion } from '@/types/QuizQuestion';
 import { QuizResult } from '@/types/QuizResult';
 import { QuizTest } from '@/types/TestQuiz';
 import { TrafficSign } from '@/types/TrafficSign';
 import { User } from '@/types/User';
-import { VideoLesson } from '@/types/VideoLesson';
+import { VideoLesson, VideoLessonCategory } from '@/types/VideoLesson';
+import { WatchedLesson } from '@/types/WatchedLessons';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface FirebaseContextType {
@@ -27,6 +36,14 @@ createLog: (data: Omit<Logs, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>
 updateLog: (id: string, data: Partial<Omit<Logs, 'id' | 'createdAt'>>) => Promise<void>;
 deleteLog: (id: string) => Promise<void>;
 getLogById: (id: string) => Promise<Logs | null>;
+ watchedLessons: WatchedLesson[];
+  markLessonAsWatched: (data: Omit<WatchedLesson, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateWatchedLesson: (id: string, data: Partial<WatchedLesson>) => Promise<void>;
+  loadWatchedLessonsByUser: (userId: string) => Promise<void>;
+  getUnwatchedLessonsByCategory: (userId: string, category: VideoLessonCategory) => Promise<VideoLesson[]>;
+  getVideoLessonsByCategory: (category: VideoLessonCategory) => Promise<VideoLesson[]>;
+  checkIfLessonWatched: (userId: string, videoLessonId: string) => Promise<WatchedLesson | null>;
+
   // Carregamento de dados
   loadInitialData: () => Promise<void>;
   loadQuizQuestionsByTestId: (quizTestId: string) => Promise<void>;
@@ -75,6 +92,7 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [logs, setLogs] = useState<Logs[]>([]);
+  const [watchedLessons, setWatchedLessons] = useState<WatchedLesson[]>([]);
 
   // Carregamento inicial de dados
   const loadInitialData = async () => {
@@ -118,7 +136,35 @@ export const FirebaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const results = await fetchResultsByUser(userId);
     setQuizResults(results);
   };
+const markLessonAsWatched = async (data: Omit<WatchedLesson, 'id' | 'createdAt' | 'updatedAt'>) => {
+  await createWatchedLesson(data);
+  await loadWatchedLessonsByUser(data.userId);
+};
 
+const updateWatchedLessonRecord = async (id: string, data: Partial<WatchedLesson>) => {
+  await updateWatchedLesson(id, data);
+  if (data.userId) {
+    await loadWatchedLessonsByUser(data.userId);
+  }
+};
+
+
+const loadWatchedLessonsByUser = async (userId: string) => {
+  const watched = await fetchWatchedLessonsByUser(userId);
+  setWatchedLessons(watched);
+};
+
+const getUnwatchedLessonsByCategory = async (userId: string, category: VideoLessonCategory) => {
+  return await fetchUnwatchedLessonsByCategory(userId, category);
+};
+
+const getVideoLessonsByCategory = async (category: VideoLessonCategory) => {
+  return await fetchVideoLessonsByCategory(category);
+};
+
+const checkIfLessonWatched = async (userId: string, videoLessonId: string) => {
+  return await getWatchedLessonByUserAndVideo(userId, videoLessonId);
+};
    // Logs
       const loadLogs = async () => {
       const logList = await fetchLogs();
@@ -251,6 +297,7 @@ const getLogById = async (id: string): Promise<Logs | null> => {
         quizQuestions,
         quizResults,
         users,
+        watchedLessons,
         logs,
         loadLogs,
         createLog,
@@ -287,6 +334,13 @@ const getLogById = async (id: string): Promise<Logs | null> => {
         modifyVideoLesson,
         removeVideoLesson,
         getVideoLessonById,
+
+         markLessonAsWatched,
+      updateWatchedLesson: updateWatchedLessonRecord,
+      loadWatchedLessonsByUser,
+      getUnwatchedLessonsByCategory,
+      getVideoLessonsByCategory,
+      checkIfLessonWatched,
       }}
     >
       {children}

@@ -52,11 +52,10 @@ export interface DailyTip {
 
 // types/video.ts
 export interface FeaturedVideo {
-  id: string;
-  title: string;
-  duration: string;
+  videoUrl: string;
   thumbnail: string;
-  views: number;
-  uploadDate: Date;
+  title: string;
+  duration: number;
+  views: string;
   instructor: string;
 }

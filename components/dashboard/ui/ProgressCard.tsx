@@ -1,20 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Progress } from '../types';
 import { COLORS } from '@/hooks/useColors';
 import { useRouter } from 'expo-router';
+import { auth } from '@/firebase/firebase';
+import { getUserProgress, Progress } from '../data/progressData';
 
-const ProgressCard: React.FC<{ progress: Progress }> = ({ progress }) => {
+const ProgressCard: React.FC = () => {
+  const [progress, setProgress] = useState<Progress>({
+    completedLessons: 0,
+    totalLessons: 0,
+    percentage: 0,
+    nextLesson: false,
+    lastAccessed: null
+  });
+  
+  const router = useRouter();
 
-  const router = useRouter()
+  useEffect(() => {
+    const loadUserProgress = async () => {
+      if (auth.currentUser?.uid) {
+        const userProgress = await getUserProgress(auth.currentUser.email || '');
+        setProgress(userProgress);
+      }
+    };
+
+    loadUserProgress();
+  }, []);
+
   return (
     <View className="mb-6 p-5 rounded-xl shadow-sm" style={{ backgroundColor: COLORS.surface }}>
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-lg font-semibold" style={{ color: COLORS.text }}>Seu Progresso</Text>
-        <TouchableOpacity
-        onPress={()=> router.push('/(details)/progress')}
-        >
+        <TouchableOpacity onPress={() => router.push('/(details)/progress')}>
           <Text className="text-sm" style={{ color: COLORS.primary }}>Ver detalhes</Text>
         </TouchableOpacity>
       </View>
@@ -29,7 +46,7 @@ const ProgressCard: React.FC<{ progress: Progress }> = ({ progress }) => {
             }}
           />
         </View>
-        <Text className="ml-3 font-medium" style={{ color: COLORS.primary }}>{progress.percentage}%</Text>
+        <Text className="ml-3 font-medium" style={{ color: COLORS.primary }}>{progress.percentage > 0 ? progress.percentage : 0}%</Text>
       </View>
       
       <View className="flex-row justify-between gap-2">
@@ -43,7 +60,12 @@ const ProgressCard: React.FC<{ progress: Progress }> = ({ progress }) => {
           <Text className="text-sm" style={{ color: COLORS.textLight }}>Total de aulas</Text>
         </View>
         
-      
+        <View className="items-center">
+          <Text className="text-2xl font-bold" style={{ color: COLORS.text }}>
+            {progress.nextLesson ? progress.nextLesson.split(' ').slice(0, 2).join(' ').toLocaleLowerCase() : '0'}...
+          </Text>
+           <Text className="text-sm" style={{ color: COLORS.textLight }}>Próxima aula</Text>
+        </View>
       </View>
     </View>
   );

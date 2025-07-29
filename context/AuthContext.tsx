@@ -17,12 +17,11 @@ import {
 } from "firebase/firestore"; 
 
 import { clearUserFromStorage, getUserFromStorage, saveUserToStorage } from '@/firebase/storage';
-import { User } from '@/types/User';
-
 import Toast from '@/components/ui/toast';
 import LoadingModal from '@/components/ui/loading';
 import { auth, db } from '@/firebase/firebase';
 import { createLog } from '@/services/logService';
+import { User } from '@/types/User';
 
 interface AuthContextType {
   user: User | null;
