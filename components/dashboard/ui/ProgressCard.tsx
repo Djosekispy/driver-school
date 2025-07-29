@@ -25,7 +25,7 @@ const ProgressCard: React.FC = () => {
     };
 
     loadUserProgress();
-  }, []);
+  }, [auth]);
   return (
     <View className="mb-6 p-5 rounded-xl shadow-sm" style={{ backgroundColor: COLORS.surface }}>
       <View className="flex-row justify-between items-center mb-4">

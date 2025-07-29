@@ -26,8 +26,7 @@ const UserStatsDashboard = () => {
     };
 
     loadStats();
-  }, []);
-console.log('stats', stats);
+  }, [auth]);
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">

@@ -249,7 +249,7 @@ const TrafficSignsScreen = () => {
             )}
 
             {/* Regras */}
-            {selectedSign.rules?.length > 0 && (
+            {selectedSign.rules && selectedSign.rules?.length > 0 && (
               <>
                 <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text }}>
                   Regras Relacionadas
@@ -273,7 +273,7 @@ const TrafficSignsScreen = () => {
             )}
 
             {/* Erros Comuns */}
-            {selectedSign.commonMistakes?.length > 0 && (
+            {selectedSign.commonMistakes && selectedSign.commonMistakes?.length > 0 && (
               <>
                 <Text className="text-lg font-semibold mb-2" style={{ color: COLORS.text }}>
                   Erros Comuns

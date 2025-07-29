@@ -22,11 +22,10 @@ interface ChatResponse {
   error?: string;
 }
 
-// Configurações do Assistente de Condução
 const INSTRUCTOR_CONFIG = {
-  apiKey: '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', // Substitua pela sua chave
+  apiKey: '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', 
   apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
-  model: 'deepseek/deepseek-chat:free',
+  model: 'openai/gpt-3.5-turbo',
   systemPrompt: `
     Você é um instrutor especializado em aulas de condução automóvel. 
     Sua função é responder exclusivamente sobre:

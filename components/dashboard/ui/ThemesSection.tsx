@@ -127,7 +127,7 @@ const ThemesSection: React.FC = () => {
     };
 
     loadData();
-  }, []);
+  }, [auth]);
 
   if (loading) {
     return (

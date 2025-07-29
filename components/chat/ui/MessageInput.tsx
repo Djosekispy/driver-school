@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { COLORS } from '@/constants/Colors';
+import { COLORS } from '@/hooks/useColors';
 
 
 type MessageInputProps = {
@@ -27,27 +27,50 @@ const MessageInput = ({ onSend, onImageSelect }: MessageInputProps) => {
   };
 
   return (
-    <View className="flex-row items-center p-3 border-t border-gray-200 bg-white">
-      <TouchableOpacity className="p-2 mr-2" onPress={handleImagePick}>
-        <Ionicons name="camera" size={24} color={COLORS.blue.default} />
+    <View 
+      className="flex-row items-center p-3 border-t"
+      style={{
+        backgroundColor: COLORS.surface,
+        borderColor: COLORS.border
+      }}
+    >
+      <TouchableOpacity 
+        className="p-2 mr-2" 
+        onPress={handleImagePick}
+      >
+        <Ionicons 
+          name="camera" 
+          size={24} 
+          color={COLORS.primary} 
+        />
       </TouchableOpacity>
+      
       <TextInput
-        className="flex-1 border border-gray-300 rounded-full py-2 px-4 mr-2"
+        className="flex-1 border rounded-full py-2 px-4 mr-2"
+        style={{
+          borderColor: COLORS.border,
+          backgroundColor: COLORS.yellowLighten5,
+          color: COLORS.text,
+        }}
         placeholder="Digite sua mensagem..."
         value={message}
         onChangeText={setMessage}
         onSubmitEditing={handleSend}
-        placeholderTextColor={COLORS.text.secondary}
+        placeholderTextColor={COLORS.textLight}
       />
+      
       <TouchableOpacity 
-        className="p-2 bg-blue-500 rounded-full"
+        className="p-2 rounded-full"
+        style={{
+          backgroundColor: message.trim() ? COLORS.primary : COLORS.yellowLighten3,
+        }}
         onPress={handleSend}
         disabled={!message.trim()}
       >
         <MaterialIcons 
           name="send" 
           size={24} 
-          color={message.trim() ? COLORS.text.light : COLORS.text.secondary} 
+          color={message.trim() ? COLORS.surface : COLORS.textLight} 
         />
       </TouchableOpacity>
     </View>
