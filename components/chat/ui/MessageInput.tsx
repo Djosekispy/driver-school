@@ -61,9 +61,6 @@ const MessageInput = ({ onSend, onImageSelect }: MessageInputProps) => {
       
       <TouchableOpacity 
         className="p-2 rounded-full"
-        style={{
-          backgroundColor: message.trim() ? COLORS.primary : COLORS.yellowLighten3,
-        }}
         onPress={handleSend}
         disabled={!message.trim()}
       >

@@ -126,7 +126,7 @@ return (
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <MessageList messages={[item]} />
+          <MessageList key={item.id} messages={[item]} />
         )}
         contentContainerStyle={{ 
           paddingHorizontal: 16,
