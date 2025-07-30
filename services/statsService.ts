@@ -85,7 +85,7 @@ const getUserStats = async (userId: string): Promise<UserStats> => {
 
   // Processar resultados
   resultsData.forEach(result => {
-    const test = testsData.find(t => t.id === result.id);
+    const test = testsData.find(t => t.id === result.quizTestId);
     if (!test) return;
 
     // Atualizar estatísticas gerais
