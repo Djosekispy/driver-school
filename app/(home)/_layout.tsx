@@ -1,25 +1,25 @@
+import { Tabs } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Drawer } from 'expo-router/drawer';
-import CustomDrawerContent from '../(welcome)/CustomDrawerContent';
 import { COLORS } from '@/hooks/useColors';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function DrawerLayout() {
+export default function TabsLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
+      <Tabs
         screenOptions={{
-          headerShown: true,
-          drawerActiveTintColor: COLORS.primary,
-          drawerInactiveTintColor: COLORS.text,
-          drawerLabelStyle: {
-            fontSize: 16,
+          headerShown: false,
+          tabBarActiveTintColor: COLORS.primary,
+          tabBarInactiveTintColor: COLORS.text,
+          tabBarLabelStyle: {
+            fontSize: 14,
             fontWeight: '600',
-            marginLeft: -10,
           },
-          drawerStyle: {
+          tabBarStyle: {
             backgroundColor: COLORS.background,
-            paddingTop: 20,
+            paddingBottom: 6,
+            paddingTop: 6,
+            height: 60,
           },
           headerStyle: {
             backgroundColor: COLORS.surface,
@@ -30,11 +30,47 @@ export default function DrawerLayout() {
           },
         }}
       >
-        <Drawer.Screen name="index" options={{ drawerLabel: '🏠 Início', title: '' }} />
-        <Drawer.Screen name="chat" options={{ drawerLabel: '💬 Conversas', title: '' }} />
-        <Drawer.Screen name="trafic" options={{ drawerLabel: '🚦 Sinais de Trânsito', title: '' }} />
-        <Drawer.Screen name="testing" options={{ drawerLabel: '🧠 Teste de Conhecimento', title: '' }} />
-      </Drawer>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: '',
+            tabBarLabel: 'Início',
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="home" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="chat"
+          options={{
+            title: '',
+            tabBarLabel: 'Conversas',
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="message-circle" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="trafic"
+          options={{
+            title: '',
+            tabBarLabel: 'Sinais',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="traffic-light" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="testing"
+          options={{
+            title: '',
+            tabBarLabel: 'Teste',
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="book-open" size={size} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
     </GestureHandlerRootView>
   );
 }

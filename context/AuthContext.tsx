@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         showToast('error', 'Usuário não encontrado.');
       }
     } catch (error: any) {
-      showToast('error', `Erro ao logar: ${error.message}`);
+      showToast('error', `Usuario ou senha inválidos`);
     } finally {
       setIsLoading(false);
     }
@@ -180,6 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signOut(auth);
     await clearUserFromStorage();
     setUser(null);
+    router.push('/(auth)/login');
   };
 
   const updateUserLocation = async (location: { lat: number; lng: number }) => {

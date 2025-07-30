@@ -289,7 +289,7 @@ const getLogById = async (id: string): Promise<Logs | null> => {
     return await getVideoLesson(id);
   };
 
-  // Efeito inicial
+
   useEffect(() => {
     loadInitialData();
   }, []);

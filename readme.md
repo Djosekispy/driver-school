@@ -71,4 +71,5 @@ Aplicativo móvel **inovador** que ensina direção veicular de forma **autônom
 - VER ESTATISTICAS
 - FAZER TESTES
 
+#eas build -p android --profile preview
 

@@ -31,6 +31,7 @@ interface UserStats {
     date: Date;
     testTitle: string;
     score: number;
+    dateFormatted?: string; 
   }[];
   progressOverTime: {
     date: Date;
@@ -109,12 +110,12 @@ const getUserStats = async (userId: string): Promise<UserStats> => {
         score: scorePercentage
       };
     }
-
     // Adicionar atividade recente
     stats.recentActivity.push({
       date: result.quizDate instanceof Date ? result.quizDate : new Date(result.quizDate),
       testTitle: test.title,
-      score: scorePercentage
+      score: scorePercentage,
+        dateFormatted: String(result.quizDate)
     });
   });
  

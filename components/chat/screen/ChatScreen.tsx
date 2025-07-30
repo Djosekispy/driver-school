@@ -11,7 +11,7 @@ import { COLORS } from '@/hooks/useColors';
 
 export type ChatMessage = {
   id: string;
-  text: string;
+  text?: string;
   input?: string; 
   sender: 'user' | 'ai' | 'system';
   timestamp: Date;
@@ -53,7 +53,7 @@ const ChatScreen = () => {
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      text,
+      input : text,
       sender: 'user',
       timestamp: new Date(),
     };
@@ -153,8 +153,6 @@ return (
                 </Text>
               </View>
             )}
-            {/* Espaço extra para o input */}
-            <View style={{ height: 80 }} />
           </>
         }
 

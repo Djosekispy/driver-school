@@ -5,6 +5,12 @@ import { COLORS } from '@/hooks/useColors';
 import { getUserStats, UserStats } from '@/services/statsService';
 import { useFirebase } from '@/context/FirebaseContext';
 import { auth } from '@/firebase/firebase';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Timestamp } from 'firebase/firestore';
+import { formatRelativeTimeFromFirebaseTimestamp } from '@/services/data';
+
+
 
 const UserStatsDashboard = () => {
   const [stats, setStats] = useState<UserStats | null>(null);
@@ -215,7 +221,7 @@ const UserStatsDashboard = () => {
                   </View>
                 </View>
 
-                <View className="flex-row justify-between mb-4">
+                <ScrollView style={{ overflow : 'hidden'}} horizontal showsHorizontalScrollIndicator={false} className="mb-4 gap-4">
                   <View>
                     <Text className="text-sm" style={{ color: COLORS.textLight }}>Testes Realizados</Text>
                     <Text className="text-xl font-bold" style={{ color: COLORS.text }}>
@@ -234,7 +240,7 @@ const UserStatsDashboard = () => {
                       {data.averageScore.toFixed(1)}%
                     </Text>
                   </View>
-                </View>
+                </ScrollView>
 
                 {data.bestTest.testTitle && (
                   <View className="border-t border-gray-100 pt-3">
@@ -269,9 +275,9 @@ const UserStatsDashboard = () => {
                   <Text className="font-medium" style={{ color: COLORS.text }}>
                     {activity.testTitle}
                   </Text>
-                  <Text className="text-sm" style={{ color: COLORS.textLight }}>
-                    {activity.date.toLocaleDateString('pt-BR')}
-                  </Text>
+                 <Text className="text-sm" style={{ color: COLORS.textLight }}>
+              {formatRelativeTimeFromFirebaseTimestamp(activity.dateFormatted as string )}
+            </Text>
                 </View>
                 
                 <View className="items-end">
