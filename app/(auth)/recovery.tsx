@@ -14,7 +14,6 @@ import { useForm } from 'react-hook-form';
 import { COLORS } from '@/hooks/useColors';
 import { Link, useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import { useAuth } from '@/context/AuthContext';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
 
@@ -47,7 +46,6 @@ export default function ForgotPassword() {
 const onSubmit = async (data: ForgotPasswordFormData) => {
   try {
     setIsLoading(true);
-    
     // Envia o email de redefinição de senha
     await sendPasswordResetEmail(auth, data.email);
     
