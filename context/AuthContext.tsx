@@ -4,6 +4,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateEmail,
+  updatePassword,
+  updatePhoneNumber,
   updateProfile
 } from 'firebase/auth';
 import {
@@ -33,6 +36,7 @@ interface AuthContextType {
   logout: () => void;
   updateUserLocation: (location: { lat: number; lng: number }) => void;
   isAuthenticated: boolean;
+  changePassword: (newPassword : string)=>Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -107,8 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (userData.avatarUrl) {
           updateData.photoURL = userData.avatarUrl;
         }
-
         await updateProfile(auth.currentUser, updateData);
+        if(userData.email && userData.email !== auth.currentUser.email) {await updateEmail(auth.currentUser,userData.email)}
+        if(userData.phone && userData.phone !== auth.currentUser.phoneNumber) {await updatePhoneNumber(auth.currentUser,userData.phone as any)}
       }
         const updated = { ...user, ...userData } as User;
         setUser(updated);
@@ -144,6 +149,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
     }
   };
+
+  const changePassword = async (newPassword: string) => {
+  setIsLoading(true);
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("Usuário não autenticado.");
+    }
+
+    await updatePassword(currentUser, newPassword);
+    showToast('success', 'Senha atualizada com sucesso!');
+  } catch (error: any) {
+    const errorMessage = error.message || 'Erro ao atualizar senha.';
+    showToast('error', errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const register = async (userData: Partial<User>, password: string) => {
     setIsLoading(true);
@@ -203,6 +226,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updatedUser,
     updatePhoto,
     logout,
+    changePassword,
     updateUserLocation,
     isAuthenticated: !!user,
   };

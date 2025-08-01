@@ -213,7 +213,7 @@ const ProfileScreen = () => {
               style={{ backgroundColor: COLORS.yellowLighten5 }}
             >
               <Text className="text-xs font-medium" style={{ color: COLORS.primary }}>
-                {getRoleLabel(user?.role)}
+                {getRoleLabel(user?.role as UserRole)}
               </Text>
             </View>
             <Text className="text-sm" style={{ color: COLORS.textLight }}>
@@ -307,7 +307,7 @@ const ProfileScreen = () => {
               <TouchableOpacity 
                 className="flex-row items-center justify-between p-4 border-b" 
                 style={{ borderColor: COLORS.border }}
-                onPress={() => router.navigate('ChangePassword')}
+                onPress={() => router.push('/(more)/changePassword')}
               >
                 <View className="flex-row items-center">
                   <MaterialIcons name="lock" size={22} color={COLORS.text} />

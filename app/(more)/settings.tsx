@@ -214,7 +214,7 @@ const SettingsScreen = () => {
                     </View>
                     <Text 
                       className="text-base"
-                      style={{ color: item.textColor || COLORS.text }}
+                      style={{ color: COLORS.text }}
                     >
                       {item.title}
                     </Text>

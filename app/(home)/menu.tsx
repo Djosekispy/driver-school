@@ -22,7 +22,7 @@ const mainOptions = [
   {
     title: "Video Aulas",
     icon: <MaterialIcons name="camera" size={24} color={COLORS.primary} />,
-    action: () => navigation.navigate('/(videos)/VideoList')
+    action: () => navigation.navigate('/(videos)/studantVideo')
   },
   {
     title: "Dicas de Trânsito",
