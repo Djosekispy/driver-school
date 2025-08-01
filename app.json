@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "driver-school",
-    "slug": "driver-school",
+    "name": "DriveLearn",
+    "slug": "DriveLearn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

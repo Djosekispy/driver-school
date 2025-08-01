@@ -73,3 +73,10 @@ Aplicativo móvel **inovador** que ensina direção veicular de forma **autônom
 
 #eas build -p android --profile preview
 
+#  Ajustes em Falta
+- Apresentação da welcome screen
+- Defnir o Status Bar
+- Melhorar a splash screen
+- Definir como preto os placaholder dos inputs
+ 
+
