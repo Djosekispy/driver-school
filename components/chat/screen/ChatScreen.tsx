@@ -118,7 +118,7 @@ return (
     {/* Área principal de mensagens */}
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 30}
       style={{ flex: 1 }}
     >
       {/* Lista de mensagens com scroll */}

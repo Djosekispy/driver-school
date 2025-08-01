@@ -17,9 +17,8 @@ export default function TabsLayout() {
           },
           tabBarStyle: {
             backgroundColor: COLORS.background,
-            paddingBottom: 6,
-            paddingTop: 6,
-            height: 60,
+            paddingBottom: 2,
+            paddingTop: 6
           },
           headerStyle: {
             backgroundColor: COLORS.surface,
@@ -34,7 +33,6 @@ export default function TabsLayout() {
           name="index"
           options={{
             title: '',
-            tabBarLabel: 'Início',
             tabBarIcon: ({ color, size }) => (
               <Feather name="home" size={size} color={color} />
             ),
@@ -44,7 +42,6 @@ export default function TabsLayout() {
           name="chat"
           options={{
             title: '',
-            tabBarLabel: 'Conversas',
             tabBarIcon: ({ color, size }) => (
               <Feather name="message-circle" size={size} color={color} />
             ),
@@ -54,7 +51,6 @@ export default function TabsLayout() {
           name="trafic"
           options={{
             title: '',
-            tabBarLabel: 'Sinais',
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="traffic-light" size={size} color={color} />
             ),
@@ -64,9 +60,18 @@ export default function TabsLayout() {
           name="testing"
           options={{
             title: '',
-            tabBarLabel: 'Teste',
             tabBarIcon: ({ color, size }) => (
               <Feather name="book-open" size={size} color={color} />
+            ),
+          }}
+        />
+
+         <Tabs.Screen
+          name="menu"
+          options={{
+            title: '',
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="menu" size={size} color={color} />
             ),
           }}
         />

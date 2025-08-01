@@ -26,15 +26,7 @@ const HomeScreen = () => {
   return (
     <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
       {user && <Header user={user} />}
-        {user?.role === 'admin' && (
-        <TouchableOpacity 
-          className="absolute bottom-6 right-6 z-10 w-14 h-14 rounded-full justify-center items-center shadow-lg"
-          style={{ backgroundColor: COLORS.primary }}
-          onPress={() => router.push('/(admin)')}
-        >
-          <FontAwesome5 name="user-shield" size={20} color="white" />
-        </TouchableOpacity>
-      )}
+    
       <ScrollView className="flex-1 px-4 pt-4">
         <ProgressCard />
         <UserStatsDashboard />

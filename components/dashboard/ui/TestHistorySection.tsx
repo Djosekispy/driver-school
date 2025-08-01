@@ -32,7 +32,7 @@ const UserStatsDashboard = () => {
     };
 
     loadStats();
-  }, [auth]);
+  }, [auth.currentUser?.uid]);
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">
