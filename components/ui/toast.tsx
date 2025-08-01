@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Text, StyleSheet, Platform } from 'react-native';
+import { COLORS } from '@/hooks/useColors';
 
 type ToastProps = {
   message: string;
-  type: 'success' | 'error';
+  type: 'success' | 'error'; // pode expandir para 'warning' | 'info' se quiser
   visible: boolean;
   onHide: () => void;
 };
@@ -31,13 +32,18 @@ const Toast: React.FC<ToastProps> = ({ message, type, visible, onHide }) => {
 
   if (!visible) return null;
 
+  const backgroundColor = {
+    success: COLORS.success,
+    error: COLORS.error,
+  }[type];
+
   return (
     <Animated.View
       style={[
         styles.toastContainer,
         {
           opacity: fadeAnim,
-          backgroundColor: type === 'success' ? '#16a34a' : '#dc2626', 
+          backgroundColor,
         },
       ]}
     >
@@ -49,11 +55,11 @@ const Toast: React.FC<ToastProps> = ({ message, type, visible, onHide }) => {
 const styles = StyleSheet.create({
   toastContainer: {
     position: 'absolute',
-    bottom: 80,
+    bottom: Platform.OS === 'ios' ? 100 : 80,
     left: 20,
     right: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     borderRadius: 16,
     zIndex: 1000,
     alignItems: 'center',
@@ -65,10 +71,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   toastText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-    fontStyle: 'italic',
+    color: COLORS.surface,
+    fontSize: 15,
+    fontWeight: '600',
     textAlign: 'center',
   },
 });

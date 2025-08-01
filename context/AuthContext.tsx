@@ -99,12 +99,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!querySnapshot.empty) {
         await updateDoc(querySnapshot.docs[0].ref, { ...userData });
 
-        if (auth.currentUser) {
-          await updateProfile(auth.currentUser, {
-            displayName: userData.name,
-          });
+       if (auth.currentUser) {
+        const updateData: any = {
+          displayName: userData.name
+        };
+
+        if (userData.avatarUrl) {
+          updateData.photoURL = userData.avatarUrl;
         }
 
+        await updateProfile(auth.currentUser, updateData);
+      }
         const updated = { ...user, ...userData } as User;
         setUser(updated);
         await saveUserToStorage(updated);

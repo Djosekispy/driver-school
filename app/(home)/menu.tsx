@@ -59,9 +59,12 @@ const mainOptions = [
           source={{ uri: user?.avatarUrl || auth.currentUser?.photoURL || 'https://randomuser.me/api/portraits/men/1.jpg' }} 
           style={styles.profileImage}
         />
+      
         <View style={styles.profileText}>
+            <TouchableOpacity  onPress={() => navigation.push('/(more)/profile')} >
           <Text style={styles.profileName}>{user?.name}</Text>
           <Text style={styles.profileEmail}>{user?.email}</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -127,9 +130,7 @@ const mainOptions = [
       </ScrollView>
 
       {/* Rodapé com versão do app */}
-      <View style={styles.footer}>
-        <Text style={styles.versionText}>Versão 2.3.4</Text>
-      </View>
+
     </View>
   );
 };

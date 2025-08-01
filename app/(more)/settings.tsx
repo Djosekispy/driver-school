@@ -4,9 +4,10 @@ import { AntDesign, MaterialIcons, Feather, Ionicons, FontAwesome } from '@expo/
 import { COLORS } from '@/hooks/useColors';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 
 const SettingsScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { user } = useAuth()
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
@@ -147,7 +148,7 @@ const SettingsScreen = () => {
       {/* Cabeçalho */}
       <View className="flex-row items-center px-4 py-3 border-b" style={{ borderColor: COLORS.border }}>
         <TouchableOpacity 
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.back()}
           className="p-2 mr-2"
         >
           <AntDesign name="arrowleft" size={24} color={COLORS.primary} />
@@ -164,7 +165,7 @@ const SettingsScreen = () => {
         <TouchableOpacity 
           className="flex-row items-center p-4 mb-4 rounded-lg border"
           style={{ borderColor: COLORS.border, backgroundColor: COLORS.surface }}
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.push('/(more)/profile')}
         >
           <View 
             className="w-14 h-14 rounded-full justify-center items-center mr-3"
