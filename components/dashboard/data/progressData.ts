@@ -3,18 +3,19 @@ import { fetchWatchedLessonsByUser } from "@/services/watcheLessonService";
 import { VideoLesson, VideoLessonCategory } from "@/types/VideoLesson";
 import { WatchedLesson } from "@/types/WatchedLessons";
 
-export const getUserProgress = async (email: string): Promise<Progress> => {
+export const getUserProgress = async (userId: string): Promise<Progress> => {
   // Busca todas as videoaulas e as assistidas pelo usuário em paralelo
   const [allLessons, watchedLessons] = await Promise.all([
     fetchVideoLessons(),
-    fetchWatchedLessonsByUser(email)
+    fetchWatchedLessonsByUser(userId)
   ]);
 
   // Calcula métricas básicas
   const completedLessons = watchedLessons.length;
   const totalLessons = allLessons.length;
-  const percentage = Math.round((completedLessons / totalLessons) * 100);
+  const percentage = Math.round(( totalLessons / completedLessons) * 100);
 
+  
   // Encontra a última aula assistida
   const lastWatchedLesson = watchedLessons.sort((a, b) => 
     new Date(b.watchedAt).getTime() - new Date(a.watchedAt).getTime()

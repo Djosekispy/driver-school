@@ -77,8 +77,6 @@ const StudentVideoLessonsScreen = () => {
       default: return { bg: COLORS.border, text: COLORS.text };
     }
   };
-
-  // Abrir vídeo e marcar como assistido
   const handleOpenVideo = async (video: VideoLesson) => {
     setSelectedVideo(video);
     setModalVisible(true);
@@ -89,8 +87,8 @@ const StudentVideoLessonsScreen = () => {
         await markLessonAsWatched({
           userId: user.id,
           videoLessonId: video.id,
-          watchedAt: new Date().toISOString(),
-          progress: 100
+          watchedAt : new Date()
+
         });
       } catch (error) {
         console.error('Erro ao marcar como assistido:', error);
@@ -99,7 +97,6 @@ const StudentVideoLessonsScreen = () => {
       }
     }
   };
-
   // Renderizar item da lista
   const renderItem = ({ item }: { item: VideoLesson }) => {
     const categoryStyle = getCategoryStyle(item.category);

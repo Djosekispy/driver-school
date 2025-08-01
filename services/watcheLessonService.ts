@@ -31,8 +31,8 @@ export const fetchWatchedLessons = async (): Promise<WatchedLesson[]> => {
   });
 };
 
-export const fetchWatchedLessonsByUser = async (email: string): Promise<WatchedLesson[]> => {
-  const q = query(collection(db, COLLECTION), where('email', '==', email));
+export const fetchWatchedLessonsByUser = async (userId: string): Promise<WatchedLesson[]> => {
+  const q = query(collection(db, COLLECTION), where('userId', '==', userId));
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => {
     const data = doc.data();

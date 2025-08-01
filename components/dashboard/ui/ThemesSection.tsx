@@ -76,7 +76,7 @@ const ThemesSection: React.FC = () => {
         try {
           const [allLessons, watchedLessons] = await Promise.all([
             fetchVideoLessons(),
-            fetchWatchedLessonsByUser(auth.currentUser.email || '')
+            fetchWatchedLessonsByUser(auth.currentUser.uid || '')
           ]);
 
           // Criar mapa de aulas assistidas por ID para busca rápida

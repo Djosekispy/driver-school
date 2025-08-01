@@ -19,20 +19,17 @@ const ProgressCard: React.FC = () => {
   useEffect(() => {
     const loadUserProgress = async () => {
       if (auth.currentUser?.uid) {
-        const userProgress = await getUserProgress(auth.currentUser.email || '');
+        const userProgress = await getUserProgress(auth.currentUser.uid || '');
         setProgress(userProgress);
       }
     };
 
     loadUserProgress();
-  }, [auth]);
+  }, [auth.currentUser?.uid]);
   return (
     <View className="mb-6 p-5 rounded-xl shadow-sm" style={{ backgroundColor: COLORS.surface }}>
       <View className="flex-row justify-between items-center mb-4">
         <Text className="text-lg font-semibold" style={{ color: COLORS.text }}>Seu Progresso</Text>
-        <TouchableOpacity onPress={() => router.push('/(details)/progress')}>
-          <Text className="text-sm" style={{ color: COLORS.primary }}>Ver detalhes</Text>
-        </TouchableOpacity>
       </View>
       
       <View className="flex-row items-center mb-3">
