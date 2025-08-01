@@ -22,13 +22,6 @@ const Header: React.FC<{ user: User }> = ({ user }) => {
           className="w-12 h-12 rounded-full border-2"
           style={{ borderColor: COLORS.yellowLighten2 }}
         />
-        <TouchableOpacity
-          className="absolute right-[-12] bottom-[-6] p-2 rounded-full"
-          onPress={() =>logout()}
-          style={{ backgroundColor: COLORS.primary }}
-        >
-          <LogOut size={10} color={COLORS.surface} />
-        </TouchableOpacity>
       </View>
     </View>
   );

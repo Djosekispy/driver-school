@@ -10,7 +10,7 @@ import { User } from 'lucide-react-native';
 
 const MenuScreen = () => {
   const navigation = useRouter();
-  const { user } = useAuth()
+  const { user , logout} = useAuth()
 const mainOptions = [
   ...(user?.role === 'admin'
     ? [{
@@ -48,6 +48,11 @@ const mainOptions = [
       title: "Sobre o Aplicativo",
       icon: <MaterialIcons name="info" size={24} color={COLORS.textLight} />,
       action: () => navigation.push('/(more)/about')
+    },
+     {
+      title: "Terminar Sessão",
+      icon: <MaterialIcons name="logout" size={24} color={COLORS.textLight} />,
+      action: () => logout()
     }
   ];
 

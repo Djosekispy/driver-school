@@ -317,19 +317,6 @@ const ProfileScreen = () => {
                 </View>
                 <AntDesign name="right" size={16} color={COLORS.textLight} />
               </TouchableOpacity>
-
-              <TouchableOpacity 
-                className="flex-row items-center justify-between p-4" 
-                onPress={handleLogout}
-              >
-                <View className="flex-row items-center">
-                  <MaterialIcons name="logout" size={22} color="#e74c3c" />
-                  <Text className="text-base ml-4" style={{ color: "#e74c3c" }}>
-                    Sair da Conta
-                  </Text>
-                </View>
-                <AntDesign name="right" size={16} color="#e74c3c" />
-              </TouchableOpacity>
             </View>
           </View>
         )}
