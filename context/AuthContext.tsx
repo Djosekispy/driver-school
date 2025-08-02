@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const loadUser = async () => {
       const savedUser = await getUserFromStorage();
       setUser(savedUser);
-      router.push(savedUser ? '/(home)' : '/(auth)/login');
+      router.push(savedUser ? '/(home)' : '/(auth)');
       setIsLoading(false);
     };
     loadUser();

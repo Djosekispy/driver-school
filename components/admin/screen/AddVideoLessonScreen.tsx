@@ -88,19 +88,18 @@ const AddVideoLessonScreen = () => {
   const thumbnailUrl = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg` : null;
 
   return (
-    <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1"
-      style={{ backgroundColor: COLORS.background }}
-      keyboardVerticalOffset={Platform.select({ ios: 90, android: 0 })}
-    >
-       <ScrollView 
-        className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 120 }}
-        keyboardShouldPersistTaps="handled"
-      >
+ <KeyboardAvoidingView
+          style={{ flex: 1, backgroundColor: COLORS.background }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 30}
+        >
+      
         {/* Header */}
-        <View className="flex-row items-center justify-between mb-6">
+           <View className="flex-row items-center justify-between px-4 pt-4 pb-4 border-b" 
+                  style={{ 
+                    backgroundColor: COLORS.surface,
+                    borderBottomColor: COLORS.border 
+                  }}>
           <TouchableOpacity 
             onPress={() => router.back()} 
             className="p-2 rounded-full"
@@ -110,11 +109,17 @@ const AddVideoLessonScreen = () => {
           </TouchableOpacity>
           
           <Text className="text-lg font-bold" style={{ color: COLORS.text }}>
-            Nova Videoaula
+            Nova Aula em Video
           </Text>
           
           <View className="w-8" />
         </View>
+
+       <ScrollView 
+          contentContainerStyle={{ flexGrow: 2, justifyContent: 'center', paddingHorizontal: 10, paddingBottom: 428 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+      >
         {/* Preview Section */}
         {(youtubeId || formData.title) && (
           <View className="mb-6 rounded-xl overflow-hidden"
@@ -172,7 +177,7 @@ const AddVideoLessonScreen = () => {
         )}
 
         {/* Form Section */}
-        <View className="space-y-4">
+        <View className="gap-4 pt-2">
           {/* Título */}
           <View>
             <View className="flex-row items-center mb-1">
@@ -293,11 +298,10 @@ const AddVideoLessonScreen = () => {
             />
           </View>
         </View>
-      </ScrollView>
+    
 
-       <View className="absolute bottom-6 right-6 z-10">
         <TouchableOpacity
-          className="flex-row items-center justify-center p-4 rounded-full shadow-lg"
+          className="flex-row items-center justify-center p-4 rounded-md mt-2 shadow-lg"
           style={{
             backgroundColor: 
               !formData.title || !formData.category || !isValidUrl ? 
@@ -324,7 +328,8 @@ const AddVideoLessonScreen = () => {
             </>
           )}
         </TouchableOpacity>
-      </View>
+    
+        </ScrollView>
     </KeyboardAvoidingView>
   );
 };

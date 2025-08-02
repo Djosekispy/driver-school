@@ -196,13 +196,8 @@ const AddTrafficSignScreen = () => {
          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
          keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
        >
-         <ScrollView
-           contentContainerStyle={{ flexGrow: 1 }}
-           keyboardShouldPersistTaps="handled"
-           showsVerticalScrollIndicator={false}
-         >
       {/* Header */}
-      <View className="flex-row items-center justify-between px-4 pt-12 pb-4 border-b" 
+      <View className="flex-row items-center justify-between px-4 pb-4 border-b" 
         style={{ 
           backgroundColor: COLORS.surface,
           borderBottomColor: COLORS.border,
@@ -224,10 +219,15 @@ const AddTrafficSignScreen = () => {
         </Text>
         <View className="w-8" />
       </View>
+                <ScrollView 
+                   contentContainerStyle={{ flexGrow: 2, justifyContent: 'center', paddingHorizontal: 10, paddingBottom: 428 }}
+                     keyboardShouldPersistTaps="handled"
+                     showsVerticalScrollIndicator={false}
+               >
+    
 
       <ScrollView 
         className="px-4 pt-4"
-        contentContainerStyle={{ paddingBottom: 120 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -460,7 +460,7 @@ const AddTrafficSignScreen = () => {
       </ScrollView>
 
       {/* Botão de Salvar */}
-        <View className="absolute bottom-0 left-0 right-0 p-4 border-t" style={{ 
+        <View className="p-4 border-t" style={{ 
         backgroundColor: COLORS.surface,
         borderTopColor: COLORS.border,
         shadowColor: '#000',

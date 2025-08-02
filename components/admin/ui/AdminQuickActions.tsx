@@ -18,7 +18,7 @@ const AdminQuickActions: React.FC = () => {
     {
       icon: 'file-plus',
       label: 'Novo Teste',
-      screen: '/(admin)/TestCreate',
+      screen: '/(admin)/add-test',
       color: COLORS.success
     },
     {

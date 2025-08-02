@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextInput, View, Text, Pressable } from 'react-native';
 import { Controller, Control, FieldError } from 'react-hook-form';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { COLORS } from '@/hooks/useColors';
 
 type InputProps = {
   control: Control<any>;
@@ -33,6 +34,7 @@ export const Input: React.FC<InputProps> = ({
           <TextInput
             placeholder={placeholder}
             onBlur={onBlur}
+            placeholderTextColor={COLORS.text}
             onChangeText={onChange}
             value={value}
             secureTextEntry={secureTextEntry && !isPasswordVisible}
