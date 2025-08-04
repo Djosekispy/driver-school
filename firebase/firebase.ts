@@ -1,5 +1,3 @@
-// src/firebase/firebase.ts (ou onde você quiser)
-
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"; 
 import { initializeAuth, getReactNativePersistence, getAuth } from "firebase/auth";
