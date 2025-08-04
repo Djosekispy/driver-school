@@ -11,9 +11,10 @@ export const getUserProgress = async (userId: string): Promise<Progress> => {
   ]);
 
   // Calcula métricas básicas
-  const completedLessons = watchedLessons.length;
+ 
   const totalLessons = allLessons.length;
-  const percentage = Math.round(( totalLessons / completedLessons) * 100);
+   const completedLessons = watchedLessons.length > totalLessons ? totalLessons : watchedLessons.length ;
+  const percentage = Math.round((  completedLessons / totalLessons) * 100);
 
   
   // Encontra a última aula assistida
@@ -51,11 +52,12 @@ const calculateCategoryProgress = (
   const watchedCategoryLessons = watchedLessons.filter(watched => 
     categoryLessons.some(lesson => lesson.id === watched.videoLessonId)
   );
+ const TotalWatched = watchedCategoryLessons.length > categoryLessons.length ? categoryLessons.length : watchedCategoryLessons.length;
 
-  return {
+ return {
     completed: watchedCategoryLessons.length,
     total: categoryLessons.length,
-    percentage: Math.round((watchedCategoryLessons.length / categoryLessons.length) * 100) || 0
+    percentage: Math.round((TotalWatched / categoryLessons.length) * 100) || 0
   };
 };
 

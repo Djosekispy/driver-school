@@ -10,30 +10,17 @@ import { ptBR } from 'date-fns/locale';
 import { Timestamp } from 'firebase/firestore';
 import { formatRelativeTimeFromFirebaseTimestamp } from '@/services/data';
 
+interface UserStatsProps {
+  stats:UserStats | null, 
+  loading : boolean,
+  activeTab : string,
+  setActiveTab : (tab : string)=>void
+} 
 
 
-const UserStatsDashboard = () => {
-  const [stats, setStats] = useState<UserStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+const UserStatsDashboard = (data : UserStatsProps) => {
 
-  useEffect(() => {
-    const loadStats = async () => {
-      if (auth.currentUser?.uid) {
-        try {
-          const userStats = await getUserStats(auth.currentUser.uid);
-          setStats(userStats);
-        } catch (error) {
-          console.error('Error loading user stats:', error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadStats();
-  }, [auth.currentUser?.uid]);
-  if (loading) {
+  if (data.loading) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">
         <Text className="text-lg" style={{ color: COLORS.text }}>Carregando estatísticas...</Text>
@@ -41,7 +28,7 @@ const UserStatsDashboard = () => {
     );
   }
 
-  if (!stats) {
+  if (!data.stats) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-50">
         <Feather name="alert-circle" size={32} style={{ color: COLORS.error }} />
@@ -71,37 +58,37 @@ const UserStatsDashboard = () => {
       {/* Tabs */}
       <View className="flex-row border-b border-gray-200 bg-white">
         <TouchableOpacity
-          className={`flex-1 py-3 items-center ${activeTab === 'overview' ? 'border-b-2' : ''}`}
-          style={{ borderBottomColor: activeTab === 'overview' ? COLORS.primary : 'transparent' }}
-          onPress={() => setActiveTab('overview')}
+          className={`flex-1 py-3 items-center ${data.activeTab === 'overview' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: data.activeTab === 'overview' ? COLORS.primary : 'transparent' }}
+          onPress={() => data.setActiveTab('overview')}
         >
           <Text 
-            className={`font-medium ${activeTab === 'overview' ? 'text-primary' : 'text-gray-500'}`}
-            style={activeTab === 'overview' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+            className={`font-medium ${data.activeTab === 'overview' ? 'text-primary' : 'text-gray-500'}`}
+            style={data.activeTab === 'overview' ? { color: COLORS.primary } : { color: COLORS.textLight }}
           >
             Visão Geral
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className={`flex-1 py-3 items-center ${activeTab === 'categories' ? 'border-b-2' : ''}`}
-          style={{ borderBottomColor: activeTab === 'categories' ? COLORS.primary : 'transparent' }}
-          onPress={() => setActiveTab('categories')}
+          className={`flex-1 py-3 items-center ${data.activeTab === 'categories' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: data.activeTab === 'categories' ? COLORS.primary : 'transparent' }}
+          onPress={() => data.setActiveTab('categories')}
         >
           <Text 
-            className={`font-medium ${activeTab === 'categories' ? 'text-primary' : 'text-gray-500'}`}
-            style={activeTab === 'categories' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+            className={`font-medium ${data.activeTab === 'categories' ? 'text-primary' : 'text-gray-500'}`}
+            style={data.activeTab === 'categories' ? { color: COLORS.primary } : { color: COLORS.textLight }}
           >
             Por Categoria
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className={`flex-1 py-3 items-center ${activeTab === 'history' ? 'border-b-2' : ''}`}
-          style={{ borderBottomColor: activeTab === 'history' ? COLORS.primary : 'transparent' }}
-          onPress={() => setActiveTab('history')}
+          className={`flex-1 py-3 items-center ${data.activeTab === 'history' ? 'border-b-2' : ''}`}
+          style={{ borderBottomColor: data.activeTab === 'history' ? COLORS.primary : 'transparent' }}
+          onPress={() => data.setActiveTab('history')}
         >
           <Text 
-            className={`font-medium ${activeTab === 'history' ? 'text-primary' : 'text-gray-500'}`}
-            style={activeTab === 'history' ? { color: COLORS.primary } : { color: COLORS.textLight }}
+            className={`font-medium ${data.activeTab === 'history' ? 'text-primary' : 'text-gray-500'}`}
+            style={data.activeTab === 'history' ? { color: COLORS.primary } : { color: COLORS.textLight }}
           >
             Histórico
           </Text>
@@ -110,7 +97,7 @@ const UserStatsDashboard = () => {
 
       {/* Content */}
       <ScrollView className="flex-1 p-4">
-        {activeTab === 'overview' && (
+        {data.activeTab === 'overview' && (
           <View>
             {/* Overall Stats Card */}
             <View className="bg-white rounded-xl shadow-sm p-5 mb-4">
@@ -126,7 +113,7 @@ const UserStatsDashboard = () => {
 >
   <View className="items-center">
     <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
-      {stats.overall.totalTestsTaken}
+      {data.stats?.overall.totalTestsTaken}
     </Text>
     <Text className="text-sm" style={{ color: COLORS.textLight }}>
       Testes Realizados
@@ -135,7 +122,7 @@ const UserStatsDashboard = () => {
 
   <View className="items-center">
     <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
-      {stats.overall.averageScore.toFixed(1)}%
+      {data.stats?.overall.averageScore.toFixed(1)}%
     </Text>
     <Text className="text-sm" style={{ color: COLORS.textLight }}>
       Média de Acertos
@@ -144,7 +131,7 @@ const UserStatsDashboard = () => {
 
   <View className="items-center">
     <Text className="text-3xl font-bold" style={{ color: COLORS.primary }}>
-      {stats.overall.correctAnswers}
+      {data.stats?.overall.correctAnswers}
     </Text>
     <Text className="text-sm" style={{ color: COLORS.textLight }}>
       Questões Corretas
@@ -157,11 +144,11 @@ const UserStatsDashboard = () => {
                 <View className="flex-row justify-between mb-1">
                   <Text className="text-sm" style={{ color: COLORS.text }}>Melhor Categoria</Text>
                   <Text className="text-sm font-semibold" style={{ color: COLORS.primary }}>
-                    {stats.overall.bestCategory}
+                    {data.stats?.overall.bestCategory}
                   </Text>
                 </View>
                 {renderProgressBar(
-                  stats.byCategory[stats.overall.bestCategory]?.averageScore || 0,
+                  data.stats?.byCategory[data.stats?.overall.bestCategory]?.averageScore || 0,
                   COLORS.success
                 )}
               </View>
@@ -170,11 +157,11 @@ const UserStatsDashboard = () => {
                 <View className="flex-row justify-between mb-1">
                   <Text className="text-sm" style={{ color: COLORS.text }}>Categoria a Melhorar</Text>
                   <Text className="text-sm font-semibold" style={{ color: COLORS.error }}>
-                    {stats.overall.worstCategory}
+                    {data.stats?.overall.worstCategory}
                   </Text>
                 </View>
                 {renderProgressBar(
-                  stats.byCategory[stats.overall.worstCategory]?.averageScore || 0,
+                  data.stats?.byCategory[data.stats?.overall.worstCategory]?.averageScore || 0,
                   COLORS.error
                 )}
               </View>
@@ -187,7 +174,7 @@ const UserStatsDashboard = () => {
               </Text>
               
               <View className="flex-row h-40 items-end space-x-2">
-                {stats.progressOverTime.map((item, index) => (
+                {data.stats?.progressOverTime.map((item, index) => (
                   <View key={index} className="flex-1 items-center">
                     <View 
                       className="w-full rounded-t-sm" 
@@ -197,7 +184,7 @@ const UserStatsDashboard = () => {
                       }}
                     />
                     <Text className="text-xs mt-1" style={{ color: COLORS.textLight }}>
-                      {index === stats.progressOverTime.length - 1 ? 'Hoje' : ''}
+                      {index === Number(data.stats?.progressOverTime.length) - 1 ? 'Hoje' : ''}
                     </Text>
                   </View>
                 ))}
@@ -206,9 +193,9 @@ const UserStatsDashboard = () => {
           </View>
         )}
 
-        {activeTab === 'categories' && (
+        {data.activeTab === 'categories' && (
           <View>
-            {Object.entries(stats.byCategory).map(([category, data]) => (
+            {Object.entries(data.stats?.byCategory).map(([category, data]) => (
               <View key={category} className="bg-white rounded-xl shadow-sm p-5 mb-4">
                 <View className="flex-row justify-between items-center mb-3">
                   <Text className="text-lg font-semibold" style={{ color: COLORS.text }}>
@@ -260,13 +247,13 @@ const UserStatsDashboard = () => {
           </View>
         )}
 
-        {activeTab === 'history' && (
+        {data.activeTab === 'history' && (
           <View>
             <Text className="text-lg font-semibold mb-3 px-2" style={{ color: COLORS.text }}>
               Atividade Recente
             </Text>
             
-            {stats.recentActivity.map((activity, index) => (
+            {data.stats?.recentActivity.map((activity, index) => (
               <View 
                 key={index} 
                 className="bg-white rounded-xl shadow-sm p-4 mb-3 flex-row justify-between items-center"

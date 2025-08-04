@@ -68,7 +68,6 @@ const StudentVideoLessonsScreen = () => {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  // Estilo da categoria
   const getCategoryStyle = (category: string) => {
     switch (category) {
       case 'teórica': return { bg: '#3b82f6', text: 'white' };
@@ -97,7 +96,7 @@ const StudentVideoLessonsScreen = () => {
       }
     }
   };
-  // Renderizar item da lista
+  
   const renderItem = ({ item }: { item: VideoLesson }) => {
     const categoryStyle = getCategoryStyle(item.category);
     const youtubeId = extractYoutubeId(item.videoUrl);

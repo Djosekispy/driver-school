@@ -124,9 +124,7 @@ const TrafficSignsScreen = () => {
         <FlatList
           data={filteredSigns}
           keyExtractor={item => item.id}
-          numColumns={2}
           contentContainerStyle={{ padding: 16 }}
-          columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 16 }}
          renderItem={({ item }) => (
   <TouchableOpacity 
     className="w-full flex-row bg-white rounded-xl shadow-sm overflow-hidden mb-3"

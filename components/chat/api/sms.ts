@@ -2,13 +2,11 @@ import axios, { AxiosResponse, isAxiosError } from 'axios';
 
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
-// 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
 
 
 const apiKey = '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';
 
 
-// Tipos e interfaces
 type Role = 'system' | 'user' | 'assistant';
 
 interface Message {
@@ -115,8 +113,5 @@ export class InstrutorConducao {
   }
 }
 
-// Exemplo de uso:
-// const instrutor = new InstrutorConducao();
-// const resposta = await instrutor.enviarPergunta("Como regular os espelhos retrovisores corretamente?");
-// Exemplo de uso:
+
 export  const instrutor = new InstrutorConducao();

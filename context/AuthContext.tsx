@@ -112,8 +112,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           updateData.photoURL = userData.avatarUrl;
         }
         await updateProfile(auth.currentUser, updateData);
-        if(userData.email && userData.email !== auth.currentUser.email) {await updateEmail(auth.currentUser,userData.email)}
-        if(userData.phone && userData.phone !== auth.currentUser.phoneNumber) {await updatePhoneNumber(auth.currentUser,userData.phone as any)}
+       // if(userData.email && userData.email !== auth.currentUser.email) {await updateEmail(auth.currentUser,userData.email)}
+        // if(userData.phone && userData.phone !== auth.currentUser.phoneNumber) {await updatePhoneNumber(auth.currentUser,userData.phone as any)}
       }
         const updated = { ...user, ...userData } as User;
         setUser(updated);

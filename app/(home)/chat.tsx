@@ -1,9 +1,8 @@
-import { initialMessages } from "@/components/chat/data/mockData";
 import ChatScreen from "@/components/chat/screen/ChatScreen";
-import MessageList from "@/components/chat/ui/MessageList";
+import { useAuth } from "@/context/AuthContext";
 
 
 export default function Chat (){
-
-    return <ChatScreen/>
+  const { user } = useAuth(); 
+    return <ChatScreen currentUserId={user?.id as string}/>
 }

@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS } from '@/hooks/useColors';
-import { auth } from '@/firebase/firebase';
 import { VideoLessonCategory } from '@/types/VideoLesson';
-import { fetchVideoLessons } from '@/services/videoLessonService';
-import { fetchWatchedLessonsByUser } from '@/services/watcheLessonService';
+import { CategoryProgress } from '@/types/User';
 
-interface CategoryProgress {
-  id: string;
-  title: string;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
-  completedLessons: number;
-  totalLessons: number;
+
+interface ThemeSectionProps {
+ categories : CategoryProgress;
+  loading : boolean
+
 }
 
 const categoryIcons: Record<VideoLessonCategory, string> = {
@@ -66,68 +63,7 @@ const ThemeCard: React.FC<{ theme: CategoryProgress }> = ({ theme }) => {
   );
 };
 
-const ThemesSection: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryProgress[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (auth.currentUser?.uid) {
-        try {
-          const [allLessons, watchedLessons] = await Promise.all([
-            fetchVideoLessons(),
-            fetchWatchedLessonsByUser(auth.currentUser.uid || '')
-          ]);
-
-          // Criar mapa de aulas assistidas por ID para busca rápida
-          const watchedLessonIds = new Set(
-            watchedLessons.map(lesson => lesson.videoLessonId)
-          );
-
-          // Agrupar por categoria
-          const categoriesData: Record<VideoLessonCategory, CategoryProgress> = {
-            'teórica': { 
-              id: 'teorica',
-              title: categoryTitles['teórica'],
-              icon: categoryIcons['teórica'],
-              completedLessons: 0,
-              totalLessons: 0
-            },
-            'prática': { 
-              id: 'pratica',
-              title: categoryTitles['prática'],
-              icon: categoryIcons['prática'],
-              completedLessons: 0,
-              totalLessons: 0
-            },
-            'legislação': { 
-              id: 'legislacao',
-              title: categoryTitles['legislação'],
-              icon: categoryIcons['legislação'],
-              completedLessons: 0,
-              totalLessons: 0
-            }
-          };
-
-          // Contar aulas por categoria
-          allLessons.forEach(lesson => {
-            categoriesData[lesson.category].totalLessons++;
-            if (watchedLessonIds.has(lesson.id)) {
-              categoriesData[lesson.category].completedLessons++;
-            }
-          });
-
-          setCategories(Object.values(categoriesData));
-        } catch (error) {
-          console.error('Error loading themes:', error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadData();
-  }, [auth.currentUser?.uid]);
+const ThemesSection: React.FC<ThemeSectionProps> = ({categories,loading}) => {
 
   if (loading) {
     return (

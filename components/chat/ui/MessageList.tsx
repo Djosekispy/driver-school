@@ -24,11 +24,11 @@ const MessageList = forwardRef<ScrollView, MessageListProps>(({ messages }, ref)
         backgroundColor: COLORS.background 
       }}
     >
-      {messages.map((message) => (
+      {messages.map((message, index) => (
         <>
           {/* Mensagem do usuário (input) - Alinhada à direita */}
           {message.input && (
-            <View key={message.id + '_input'} className="mb-4 items-end">
+            <View key={index} className="mb-4 items-end">
               <View
                 className="rounded-xl p-3 rounded-tr-none"
                 style={{

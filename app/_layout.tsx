@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/context/AuthContext';
 import { FirebaseProvider } from '@/context/FirebaseContext';
-
+import 'react-native-get-random-values';
 
 export {
   ErrorBoundary,
@@ -49,10 +49,16 @@ function RootLayoutNav() {
       <FirebaseProvider>
     <SafeAreaView style={{flex: 1}}>
       <StatusBar  style='light' networkActivityIndicatorVisible/>
-      <Stack screenOptions={{headerShown:false}}>
-         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(home)" options={{ headerShown: false }} />
-           <Stack.Screen name="(details)" options={{ headerShown: false }} />
+       <Stack screenOptions={{headerShown:false}}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(home)" options={{ headerShown: false }} />
+        <Stack.Screen name="(details)" options={{ headerShown: false }} />
+        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+        <Stack.Screen name="(more)" options={{ headerShown: false }} />
+        <Stack.Screen name="(users)" options={{ headerShown: false }} />
+        <Stack.Screen name="(videos)" options={{ headerShown: false }} />
+        <Stack.Screen name="(test)" options={{ headerShown: false }} />
+         <Stack.Screen name="(signal)" options={{ headerShown: false }} />
       </Stack>
       </SafeAreaView>
       </FirebaseProvider>
