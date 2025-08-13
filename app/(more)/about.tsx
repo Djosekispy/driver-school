@@ -73,7 +73,7 @@ const AboutScreen = () => {
           className="text-3xl font-bold mb-2"
           style={{ color: COLORS.primary }}
         >
-          DriveLearn
+          Road Signs App AO
         </Text>
         <Text 
           className="text-base text-center"
@@ -95,7 +95,7 @@ const AboutScreen = () => {
           className="text-base leading-6"
           style={{ color: COLORS.text }}
         >
-          O DriveLearn é a plataforma mais completa para quem está aprendendo a dirigir. 
+          O Road Signs App AO é a plataforma mais completa para quem está aprendendo a dirigir. 
           Desenvolvido por especialistas em educação no trânsito, nosso aplicativo combina 
           tecnologia e pedagogia para oferecer a melhor experiência de aprendizado.
         </Text>
@@ -155,7 +155,7 @@ const AboutScreen = () => {
             className="text-base font-medium ml-3"
             style={{ color: COLORS.surface }}
           >
-            www.drivelearn.ao
+            www.Road Signs App AO.ao
           </Text>
         </TouchableOpacity>
         
@@ -169,7 +169,7 @@ const AboutScreen = () => {
             className="text-base font-medium ml-3"
             style={{ color: COLORS.surface }}
           >
-            support@drivelearn.ao
+            support@Road Signs App AO.ao
           </Text>
         </TouchableOpacity>
       </View>
@@ -186,7 +186,7 @@ const AboutScreen = () => {
           className="text-xs text-center"
           style={{ color: COLORS.textLight }}
         >
-          © {new Date().getFullYear()} DriveLearn. Todos os direitos reservados.
+          © {new Date().getFullYear()} Road Signs App AO. Todos os direitos reservados.
         </Text>
       </View>
     </ScrollView>

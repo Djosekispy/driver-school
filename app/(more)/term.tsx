@@ -11,11 +11,11 @@ const TermsConditionsScreen = () => {
   const sections = [
     {
       title: "1. Aceitação dos Termos",
-      content: "Ao utilizar o aplicativo DriveLearn, você concorda automaticamente com estes Termos e Condições. Se não concordar, por favor, não utilize nosso serviço."
+      content: "Ao utilizar o aplicativo Road Signs App AO, você concorda automaticamente com estes Termos e Condições. Se não concordar, por favor, não utilize nosso serviço."
     },
     {
       title: "2. Uso do Aplicativo",
-      content: "O DriveLearn é destinado exclusivamente para fins educacionais de aprendizagem de direção. Proíbe-se qualquer uso comercial ou não autorizado."
+      content: "O Road Signs App AO é destinado exclusivamente para fins educacionais de aprendizagem de direção. Proíbe-se qualquer uso comercial ou não autorizado."
     },
     {
       title: "3. Conta do Usuário",
@@ -23,7 +23,7 @@ const TermsConditionsScreen = () => {
     },
     {
       title: "4. Conteúdo Educacional",
-      content: "Todo o material fornecido pelo DriveLearn é para fins educacionais e não substitui a formação em autoescola credenciada."
+      content: "Todo o material fornecido pelo Road Signs App AO é para fins educacionais e não substitui a formação em autoescola credenciada."
     },
     {
       title: "5. Pagamentos e Assinaturas",
@@ -39,7 +39,7 @@ const TermsConditionsScreen = () => {
     },
     {
       title: "8. Limitação de Responsabilidade",
-      content: "O DriveLearn não se responsabiliza por decisões de trânsito tomadas pelo usuário com base no conteúdo do aplicativo."
+      content: "O Road Signs App AO não se responsabiliza por decisões de trânsito tomadas pelo usuário com base no conteúdo do aplicativo."
     }
   ];
 
@@ -72,7 +72,7 @@ const TermsConditionsScreen = () => {
 
         <View className="mb-6 p-4 rounded-lg" style={{ backgroundColor: COLORS.yellowLighten5 }}>
           <Text className="text-sm italic" style={{ color: COLORS.text }}>
-            "Por favor, leia atentamente estes Termos e Condições antes de utilizar o aplicativo DriveLearn. Seu acesso e uso estão condicionados à aceitação destes termos."
+            "Por favor, leia atentamente estes Termos e Condições antes de utilizar o aplicativo Road Signs App AO. Seu acesso e uso estão condicionados à aceitação destes termos."
           </Text>
         </View>
 
@@ -93,7 +93,7 @@ const TermsConditionsScreen = () => {
           <View className="flex-row items-start mb-3">
             <MaterialIcons name="warning" size={20} color={COLORS.yellowDarken4} />
             <Text className="text-sm flex-1 ml-2" style={{ color: COLORS.text }}>
-              Ao continuar usando o DriveLearn, você confirma que leu, compreendeu e concordou com estes Termos e Condições.
+              Ao continuar usando o Road Signs App AO, você confirma que leu, compreendeu e concordou com estes Termos e Condições.
             </Text>
           </View>
           

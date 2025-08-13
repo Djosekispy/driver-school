@@ -229,10 +229,10 @@ const SettingsScreen = () => {
         {/* Rodapé */}
         <View className="mt-4 px-2">
           <Text className="text-xs text-center" style={{ color: COLORS.textLight }}>
-            DriveLearn v2.3.4 • Build 47
+            Road Signs App AO v2.3.4 • Build 47
           </Text>
           <Text className="text-xs text-center mt-1" style={{ color: COLORS.textLight }}>
-            © {new Date().getFullYear()} DriveLearn Angola. Todos os direitos reservados.
+            © {new Date().getFullYear()} Road Signs App AO. Todos os direitos reservados.
           </Text>
         </View>
       </ScrollView>
