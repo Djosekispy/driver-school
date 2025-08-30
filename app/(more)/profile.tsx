@@ -7,6 +7,8 @@ import { useAuth } from '@/context/AuthContext';
 import { UserRole } from '@/types/User';
 import * as ImagePicker from 'expo-image-picker';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { auth } from '@/firebase/firebase';
+import { sendEmailVerification } from 'firebase/auth';
 
 enum UserRoleEnum {
   STUDENT = 'normal',
@@ -132,20 +134,18 @@ const ProfileScreen = () => {
     }
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Sair da Conta',
-      'Tem certeza que deseja sair da sua conta?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Sair', onPress: () => logout() }
-      ]
-    );
-  };
+  const validateFirebaseEmail = async () => {
+  await sendEmailVerification(auth.currentUser!);
+  Alert.alert('Verificação de Email', 'Um email de verificação foi enviado para o seu endereço de email.');
+  }
+
 
   return (
     <View className="flex-1" style={{ backgroundColor: COLORS.background }}>
       {/* Cabeçalho */}
+      <Text>
+  
+      </Text>
       <View className="flex-row items-center justify-between px-4 py-3 border-b" style={{ borderColor: COLORS.border }}>
         <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={24} color={COLORS.primary} />
@@ -193,7 +193,7 @@ const ProfileScreen = () => {
               )}
             </TouchableOpacity>
           </View>
-
+  
           {isEditing ? (
             <TextInput
               className="text-2xl font-bold text-center mb-1 p-2 border rounded-lg"
@@ -318,6 +318,20 @@ const ProfileScreen = () => {
                 <AntDesign name="right" size={16} color={COLORS.textLight} />
               </TouchableOpacity>
             </View>
+             {!auth.currentUser?.emailVerified &&    <View className="border rounded-lg overflow-hidden mt-2" style={{ borderColor: COLORS.border }}>
+              <TouchableOpacity 
+                className="flex-row items-center justify-between p-4 border-b" 
+                style={{ borderColor: COLORS.border }}
+                onPress={() => validateFirebaseEmail()}
+              >
+                <View className="flex-row items-center">
+                  <MaterialIcons name="change-circle" size={22} color={COLORS.text} />
+                  <Text className="text-base ml-4" style={{ color: COLORS.text }}>
+                    Verificar Email
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>}
           </View>
         )}
       </ScrollView>

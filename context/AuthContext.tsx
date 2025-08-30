@@ -87,47 +87,74 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const updatedUser = async (userData: Partial<User>, message?: string) => {
-    setIsLoading(true);
-    try {
-      const usersRef = collection(db, 'users');
-      const q = user?.id
-        ? query(usersRef, where('id', '==', user.id))
-        : user?.email
-        ? query(usersRef, where('email', '==', user.email))
-        : null;
+const updatedUser = async (userData: Partial<User>, message?: string) => {
+  setIsLoading(true);
+  try {
+    const usersRef = collection(db, "users");
 
-      if (!q) throw new Error('Nenhum ID ou email disponível para atualizar.');
+    const q = user?.id
+      ? query(usersRef, where("id", "==", user.id))
+      : user?.email
+      ? query(usersRef, where("email", "==", user.email))
+      : null;
 
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        await updateDoc(querySnapshot.docs[0].ref, { ...userData });
+    if (!q) throw new Error("Nenhum ID ou email disponível para atualizar.");
 
-       if (auth.currentUser) {
-        const updateData: any = {
-          displayName: userData.name
-        };
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      // Atualizar Firestore
+      await updateDoc(querySnapshot.docs[0].ref, { ...userData });
+
+      // Atualizar Auth Profile
+      if (auth.currentUser) {
+        const updateData: Record<string, string> = {};
+
+        if (userData.name) {
+          updateData.displayName = userData.name;
+        }
 
         if (userData.avatarUrl) {
           updateData.photoURL = userData.avatarUrl;
         }
-        await updateProfile(auth.currentUser, updateData);
-       // if(userData.email && userData.email !== auth.currentUser.email) {await updateEmail(auth.currentUser,userData.email)}
-        // if(userData.phone && userData.phone !== auth.currentUser.phoneNumber) {await updatePhoneNumber(auth.currentUser,userData.phone as any)}
+
+        if (Object.keys(updateData).length > 0) {
+          await updateProfile(auth.currentUser, updateData);
+        }
+
+        // Atualizar email (somente se for diferente e usuário já tiver verificado o atual)
+        if (userData.email && userData.email !== auth.currentUser.email) {
+          if (auth.currentUser.emailVerified) {
+            await updateEmail(auth.currentUser, userData.email);
+          } else {
+            throw new Error(
+              "Por favor, verifique seu email atual antes de atualizar para um novo."
+            );
+          }
+        }
+
+        // Atualização de telefone só funciona com reautenticação e credential de telefone
+        // if (userData.phone && userData.phone !== auth.currentUser.phoneNumber) {
+        //   await updatePhoneNumber(auth.currentUser, userData.phone as any);
+        // }
       }
-        const updated = { ...user, ...userData } as User;
-        setUser(updated);
-        await saveUserToStorage(updated);
-        showToast('success', message ?? 'Usuário atualizado com sucesso!');
-      } else {
-        showToast('error', 'Usuário não encontrado para atualização.');
-      }
-    } catch (error) {
-      showToast('error', 'Erro ao atualizar usuário!');
-    } finally {
-      setIsLoading(false);
+
+      // Atualizar estado local e armazenamento
+      const updated = { ...user, ...userData } as User;
+      setUser(updated);
+      await saveUserToStorage(updated);
+
+      showToast("success", message ?? "Usuário atualizado com sucesso!");
+    } else {
+      showToast("error", "Usuário não encontrado para atualização.");
     }
-  };
+  } catch (error: any) {
+    showToast("error", error.message ?? "Erro ao atualizar usuário!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const updatePhoto = async (avatarUrl: string) => {
     setIsLoading(true);
